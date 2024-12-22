@@ -1,0 +1,17 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+
+
+[*.py]
+tab_width = 4
+indent_size = 4
+
+[*.{js,ts,svelte}]
+tab_width = 2
+indent_size = 2
