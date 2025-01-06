@@ -1,9 +1,10 @@
 from bson import ObjectId
 from fastapi import APIRouter, Depends, status, HTTPException, Body
 
-from .authentication import get_current_active_user, verify_user_logged_in
+from .authentication import get_current_active_user
 from ..database import db
 from ..models import *
+from ..utils import verify_user_logged_in
 
 router = APIRouter(prefix="/times")
 
@@ -16,7 +17,10 @@ router = APIRouter(prefix="/times")
 )
 def create_time(
     current_user: Annotated[User, Depends(get_current_active_user)],
-    time: TimeIn = Body(example={"time": 12345, "event": "3x3"}),
+    time: TimeCreate = Body(
+        ...,
+        example={"time": 12345, "event": "3x3"},
+    ),
 ) -> Time:
     """
     Create a new time entry for the current user.
@@ -66,3 +70,40 @@ def delete_time(
         )
 
     return DefaultResponse(message="Time entry deleted successfully")
+
+
+@router.patch("/{time_id}")
+def update_time(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    time_id: str,
+    time: TimeUpdate = Body(
+        ...,
+        example={"time": 12345, "event": "3x3"},
+    ),
+) -> Time:
+    verify_user_logged_in(current_user)
+
+    old_time: Time = db["times"].find_one({"_id": ObjectId(current_user.id)})
+
+    if old_time is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Time entry not found"
+        )
+    if old_time.user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"message": "You are not allowed to update this time entry"},
+        )
+
+    result = db["times"].update_one(
+        {"_id": ObjectId(time_id)},
+        {"$set": time.model_dump(exclude_defaults=True)},
+    )
+
+    if result.modified_count == 0:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT, headers={"Content-Length": "0"}
+        )
+
+    updated_time = db["times"].find_one({"_id": ObjectId(time_id)})
+    return updated_time

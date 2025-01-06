@@ -77,13 +77,6 @@ async def get_current_active_user(
     return current_user
 
 
-def verify_user_logged_in(current_user: User):
-    if not current_user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="You are not logged in"
-        )
-
-
 @router.post("/token")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]

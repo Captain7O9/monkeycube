@@ -12,7 +12,9 @@ print(f"Loading .env file from {dotenv_path}: {load_success}")
 import server.api as api
 
 ALLOWED_ORIGINS = [origin for origin in os.getenv("ALLOWED_ORIGINS").split(" ")]
-print(ALLOWED_ORIGINS)
+print(f"{ALLOWED_ORIGINS=}")
+
+print("See docs at http://localhost:8000/docs")
 
 app = FastAPI()
 app.include_router(api.router)
