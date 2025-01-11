@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import '../app.css';
   import { onMount } from 'svelte';
 
@@ -12,10 +12,11 @@
 <div class="wrapper">
   <div class="layout">
     <div class="navbar">navbar</div>
-    {@render children()}
+    <div class="content">{@render children()}</div>
     <div class="footer">
       <a href="https://github.com/Captain7O9/monkeycube" target="_blank">
         <!--<editor-fold desc="GitHub SVG">-->
+
         <svg
           role="img"
           viewBox="0 0 24 24"
@@ -45,6 +46,11 @@
     padding: 20px 0;
   }
 
+  .content {
+    display: flex;
+    flex-grow: 1;
+  }
+
   .wrapper {
     display: flex;
     justify-content: center;
@@ -53,6 +59,8 @@
   }
 
   .footer {
+    display: flex;
+    justify-content: center;
     font-size: 0.75rem;
   }
 
@@ -62,6 +70,7 @@
     justify-content: center;
     gap: 5px;
     color: var(--text-secondary);
+    width: min-content;
   }
 
   .footer a:hover {

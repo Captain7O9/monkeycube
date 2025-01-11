@@ -2,7 +2,7 @@ import os
 from datetime import timedelta, timezone, datetime
 
 import jwt
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, HTTPException, status, APIRouter, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
 
@@ -77,9 +77,9 @@ async def get_current_active_user(
     return current_user
 
 
-@router.post("/token")
+@router.post("/token", response_model=Token)
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    response: Response, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> Token:
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -92,4 +92,26 @@ async def login_for_access_token(
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+
+    print("storing cookie")
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        secure=False,  # TODO: set true for production
+        samesite="strict",
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        path="/",
+    )
     return Token(access_token=access_token, token_type="bearer")
+
+
+@router.post("/logout")
+async def logout(response: Response):
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=False,  # TODO: set true for production
+        samesite="strict",
+    )
+    return {"message": "Successfully logged out"}

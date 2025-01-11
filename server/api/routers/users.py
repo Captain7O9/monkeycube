@@ -10,6 +10,19 @@ from ..utils import verify_email, verify_user_logged_in
 router = APIRouter(prefix="/users")
 
 
+@router.get(
+    "",
+    response_model=User,
+)
+def get_user_info(
+    current_user: Annotated[User, Depends(get_current_active_user)]
+) -> User:
+    verify_user_logged_in(current_user)
+
+    user = db["users"].find_one({"_id": ObjectId(current_user.id)})
+    return user
+
+
 @router.post(
     "",
     response_model=User,

@@ -1,11 +1,17 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
+  import { convertTime } from '$lib/utils';
 
   const waitTime = 500;
 
   let time = $state(0); // Time in milliseconds
-  let seconds = $derived((time / 1000).toFixed(0));
-  let decimals = $derived(time.toString().slice(-3).padStart(3, '0'));
+  let minutes = $derived(convertTime(time).minutes);
+  let seconds = $derived(
+    convertTime(time)
+      .seconds.toString()
+      .padStart(2, minutes > 0 ? '0' : '')
+  );
+  let decimals = $derived(convertTime(time).milliseconds.toString().padEnd(3, '0'));
 
   let isRunning = $state(false);
 
@@ -14,7 +20,7 @@
   let canStart = $state(false);
   let progressValue = $state(0);
 
-  let interval: number;
+  let interval: ReturnType<typeof setInterval>;
 
   function startTimer() {
     isRunning = true;
@@ -66,19 +72,28 @@
   });
 </script>
 
-<div class="content">
+<main>
   <div class="timer-wrapper">
-    <div class="timer-text">
-      <span class="seconds">{seconds}</span><span class="decimals">
+    <div class:can-start={canStart} class="timer-text">
+      <span class="time">{minutes + minutes > 0 ? ':' : '' + seconds}</span><span class="decimals">
         .{isRunning ? decimals[0] : decimals}</span
       >
     </div>
-    <progress max={waitTime} value={isRunning ? waitTime : progressValue}></progress>
+    <progress class:hidden={isRunning} max={waitTime} value={isRunning ? waitTime : progressValue}
+    ></progress>
   </div>
-</div>
+</main>
 
 <style>
-  .content {
+  .can-start {
+    color: var(--text-color);
+  }
+
+  .hidden {
+    opacity: 0;
+  }
+
+  main {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -91,9 +106,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 20vh;
   }
 
-  .seconds {
+  .time {
     font-size: 8rem;
   }
 
@@ -102,7 +118,7 @@
   }
 
   progress {
-    width: 10vw;
+    width: clamp(200px, 10vw, 300px);
     height: 5px;
     border-radius: 3px;
     border: none;

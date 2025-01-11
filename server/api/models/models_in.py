@@ -9,7 +9,7 @@ Password = Annotated[str, BeforeValidator(get_password_hash)]
 
 
 class TimeCreate(BaseModel):
-    date: int = Field(default_factory=lambda: int(epoch_time()))
+    date: int = Field(default_factory=lambda: int(epoch_time() * 1000))
     time: int
     event: str
 
