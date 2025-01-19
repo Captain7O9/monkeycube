@@ -83,13 +83,13 @@ def update_time(
 ) -> Time:
     verify_user_logged_in(current_user)
 
-    old_time: Time = db["times"].find_one({"_id": ObjectId(current_user.id)})
+    old_time: Time = db["times"].find_one({"_id": ObjectId(time_id)})
 
     if old_time is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Time entry not found"
         )
-    if old_time.user_id != current_user.id:
+    if old_time["user_id"] != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={"message": "You are not allowed to update this time entry"},
@@ -97,7 +97,7 @@ def update_time(
 
     result = db["times"].update_one(
         {"_id": ObjectId(time_id)},
-        {"$set": time.model_dump(exclude_defaults=True)},
+        {"$set": time.model_dump(exclude_unset=True)},
     )
 
     if result.modified_count == 0:

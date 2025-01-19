@@ -1,14 +1,16 @@
 export type event = '3x3';
 
-export interface time {
-  _id: string;
-  date: number;
+export interface Time {
+  _id?: string;
+  date?: number;
   time: number;
-  user_id: string;
+  user_id?: string;
   event: event;
+  dnf?: boolean;
+  plus_two?: boolean;
 }
 
-export interface user {
+export interface User {
   _id: string;
   username: string;
   full_name: string;

@@ -1,21 +1,15 @@
 <script lang="ts">
-  import '$lib/api';
-  import { fetchUser, login, logout } from '$lib/api';
-  import type { user } from '$lib/types';
-  import { onMount } from 'svelte';
+  import { user } from '$lib/user.svelte';
 
   let username = '';
   let password = '';
   let error = '';
 
-  let currentUser: user | null = null;
-
   async function handleLogin() {
     error = '';
     console.log(username, password);
     try {
-      await login(username, password);
-      await handleFetchUser();
+      await user.login(username, password);
     } catch (err) {
       if (err instanceof Error) {
         error = err.message;
@@ -24,25 +18,6 @@
       }
     }
   }
-
-  async function handleLogout() {
-    await logout();
-    await handleFetchUser();
-  }
-
-  async function handleFetchUser() {
-    try {
-      currentUser = await fetchUser();
-    } catch (err) {
-      if (err instanceof Error) {
-        error = err.message;
-      } else {
-        error = 'An unknown error occurred';
-      }
-    }
-  }
-
-  onMount(handleFetchUser);
 </script>
 
 <main>
@@ -61,10 +36,10 @@
     <button type="submit">Login</button>
   </form>
 
-  <button on:click={handleLogout}>Logout</button>
+  <button on:click={user.logout}>Logout</button>
 
   <br />
 
-  <button on:click={handleFetchUser}>Fetch User</button>
-  <p>Current user: {currentUser ? currentUser?.username : 'Not logged in'}</p>
+  <button>Fetch User</button>
+  <p>Current user: {user.isLoggedIn() ? user.username : 'Not logged in'}</p>
 </main>

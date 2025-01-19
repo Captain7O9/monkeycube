@@ -12,11 +12,15 @@ class TimeCreate(BaseModel):
     date: int = Field(default_factory=lambda: int(epoch_time() * 1000))
     time: int
     event: str
+    plus_two: bool = False
+    dnf: bool = False
 
 
 class TimeUpdate(BaseModel):
     time: int = None
     event: str = None
+    plus_two: bool = False
+    dnf: bool = False
 
 
 class UserCreate(BaseModel):

@@ -1,5 +1,6 @@
 <script lang="ts">
   import '../app.css';
+  import NavBar from '$lib/components/NavBar.svelte';
   import { onMount } from 'svelte';
 
   let { children } = $props();
@@ -11,7 +12,7 @@
 
 <div class="wrapper">
   <div class="layout">
-    <div class="navbar">navbar</div>
+    <NavBar />
     <div class="content">{@render children()}</div>
     <div class="footer">
       <a href="https://github.com/Captain7O9/monkeycube" target="_blank">
@@ -41,7 +42,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: clamp(500px, 80vw, 1200px);
+    width: clamp(500px, 90vw, 1400px);
 
     padding: 20px 0;
   }

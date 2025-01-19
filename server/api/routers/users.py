@@ -1,6 +1,5 @@
 from bson import ObjectId
-from fastapi import APIRouter, HTTPException, status, Body
-from fastapi.params import Depends
+from fastapi import APIRouter, HTTPException, status, Body, Depends
 
 from .authentication import get_current_active_user
 from ..database import db, get_user

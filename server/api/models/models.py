@@ -18,6 +18,8 @@ class Time(Model):
     time: int
     user_id: Optional[PyObjectId] = None
     event: str
+    plus_two: bool
+    dnf: bool
 
 
 class User(Model):

@@ -93,7 +93,6 @@ async def login_for_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
 
-    print("storing cookie")
     response.set_cookie(
         key="access_token",
         value=access_token,
