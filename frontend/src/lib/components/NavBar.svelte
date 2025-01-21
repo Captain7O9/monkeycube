@@ -4,7 +4,6 @@
 </script>
 
 <div class="navbar-content">
-  <!--  <a href="/" class="logo justify-left lexend-deca">monkeycube</a>-->
   <a href="/" class="logo justify-left lexend-deca"><Logo /></a>
 
   <a href="/times" aria-label="times"><i class="fa-solid fa-clock"></i></a>

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Time } from '$lib/types';
-  import { formatTime } from '$lib/utils';
+  import { formatTimeToString } from '$lib/utils';
   import { onMount } from 'svelte';
   import { user } from '$lib/user.svelte';
 
@@ -58,31 +58,31 @@
     <tbody>
       {#each times as time}
         <tr>
-          <td>{formatTime(time.time)}</td>
+          <td>{formatTimeToString(time.time)}</td>
           <td>{time.event}</td>
           <td>{new Date(time.date ?? 0).toLocaleDateString()}</td>
           <td class="options">
-            <button
-              onclick={() => {
-                handleToggle(time._id, 'dnf', time.dnf);
-              }}
-              class:toggled={time.dnf}
-              aria-label="DNF"
-              class="setting"><i class="fa-solid fa-flag"></i></button
-            >
             <button
               onclick={() => {
                 handleToggle(time._id, 'plus_two', time.plus_two);
               }}
               class:toggled={time.plus_two}
               aria-label="+2"
+              class="setting"><i class="fa-solid fa-clock"></i></button
+            >
+            <button
+              onclick={() => {
+                handleToggle(time._id, 'dnf', time.dnf);
+              }}
+              class:toggled={time.dnf}
+              aria-label="DNF"
               class="setting"
               ><i class="fa-solid fa-ban"></i>
             </button>
             <button
-              onclick={() => {
-                user.deleteTime(time._id ?? '');
-                loadTimes();
+              onclick={async () => {
+                await user.deleteTime(time._id ?? '');
+                await loadTimes();
               }}
               aria-label="Delete"
               class="delete-button"><i class="fa-solid fa-trash-can"></i></button

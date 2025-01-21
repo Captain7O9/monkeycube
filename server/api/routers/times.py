@@ -9,6 +9,15 @@ from ..utils import verify_user_logged_in
 router = APIRouter(prefix="/times")
 
 
+@router.get(
+    "/{time_id}",
+    response_model=Time,
+)
+def get_time(time_id: str) -> Time:
+    time = db["times"].find_one({"_id": ObjectId(time_id)})
+    return time
+
+
 @router.post(
     "",
     response_model=Time,
@@ -72,7 +81,10 @@ def delete_time(
     return DefaultResponse(message="Time entry deleted successfully")
 
 
-@router.patch("/{time_id}")
+@router.patch(
+    "/{time_id}",
+    response_model=Time,
+)
 def update_time(
     current_user: Annotated[User, Depends(get_current_active_user)],
     time_id: str,

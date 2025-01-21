@@ -73,6 +73,10 @@ function createUser() {
       const response = await apiFetch({ endpoint: `/users/${username}/times` });
       return response.content;
     },
+    async fetchTime(timeId: string) {
+      const response = await apiFetch({ endpoint: `/times/${timeId}` });
+      return response.content;
+    },
     async fetchUser() {
       const response = await apiFetch({
         endpoint: '/users',
@@ -82,7 +86,7 @@ function createUser() {
       return response.status === 200 ? response.content : null;
     },
     async createTime(time: Time) {
-      await apiFetch({
+      return await apiFetch({
         endpoint: '/times',
         options: {
           method: 'POST',
@@ -95,7 +99,7 @@ function createUser() {
       });
     },
     async updateTime(time: Partial<Time>) {
-      await apiFetch({
+      return await apiFetch({
         endpoint: `/times/${time._id}`,
         options: {
           method: 'PATCH',
@@ -108,7 +112,7 @@ function createUser() {
       });
     },
     async deleteTime(timeId: string) {
-      await apiFetch({
+      return await apiFetch({
         endpoint: `/times/${timeId}`,
         options: { method: 'DELETE' },
         sendToken: true

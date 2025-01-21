@@ -1,23 +1,19 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { convertTime } from '$lib/utils';
+  import { formatTime } from '$lib/utils';
   import { user } from '$lib/user.svelte';
 
   const waitTime = 500;
 
   let time = $state(0); // Time in milliseconds
-  let minutes = $derived(convertTime(time).minutes);
-  let seconds = $derived(
-    convertTime(time)
-      .seconds.toString()
-      .padStart(2, minutes > 0 ? '0' : '')
-  );
-  let decimals = $derived(convertTime(time).milliseconds.toString().padEnd(3, '0'));
+  let minutes = $derived(formatTime(time).minutes);
+  let seconds = $derived(formatTime(time).seconds);
+  let decimals = $derived(formatTime(time).decimals);
 
   let isRunning = $state(false);
 
   let startTime = 0;
-  let keyDownStartTime = $state(0);
+  let keyDownStartTime = 0;
   let canStart = $state(false);
   let progressValue = $state(0);
 
@@ -25,6 +21,8 @@
 
   let plusTwoToggle = $state(false);
   let dnfToggle = $state(false);
+
+  let currentTimeId = '';
 
   function startTimer() {
     isRunning = true;
@@ -35,13 +33,17 @@
     }, 10);
   }
 
-  function stopTimer() {
+  async function stopTimer() {
     isRunning = false;
     clearInterval(interval);
-    user.createTime({
-      time: time,
-      event: '3x3'
-    });
+    user
+      .createTime({
+        time: time,
+        event: '3x3'
+      })
+      .then((response) => {
+        currentTimeId = response.content._id;
+      });
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -65,6 +67,21 @@
     }
   }
 
+  async function loadTime() {
+    const response = await user.fetchTime(currentTimeId);
+    plusTwoToggle = response.plus_two;
+    dnfToggle = response.dnf;
+  }
+
+  async function handleToggle(option: 'dnf' | 'plus_two', currentStatus: boolean = false) {
+    await user.updateTime({ _id: currentTimeId, [option]: !currentStatus });
+    await loadTime();
+  }
+
+  async function deleteTime() {
+    await user.deleteTime(currentTimeId);
+  }
+
   onMount(() => {
     document.addEventListener('keyup', onKeyUp);
     document.addEventListener('keydown', onKeyDown);
@@ -84,25 +101,27 @@
   <div class:hidden={canStart || isRunning} class="timer-settings">
     <button
       onclick={() => {
-        plusTwoToggle = !plusTwoToggle;
-      }}
-      class:toggled={plusTwoToggle}
-      class="setting"
-      ><i class="fa-solid fa-flag"></i>+2
-    </button>
-    <button
-      onclick={() => {
-        dnfToggle = !dnfToggle;
+        handleToggle('dnf', dnfToggle);
       }}
       class:toggled={dnfToggle}
       class="setting"
-      ><i class="fa-solid fa-ban"></i>dnf
+      ><i class="fa-solid fa-clock"></i>+2
     </button>
-    <button class="delete-button"><i class="fa-solid fa-trash-can"></i>delete</button>
+    <button
+      onclick={() => {
+        handleToggle('plus_two', plusTwoToggle);
+      }}
+      class:toggled={plusTwoToggle}
+      class="setting"
+      ><i class="fa-solid fa-flag"></i>dnf
+    </button>
+    <button onclick={deleteTime} class="delete-button"
+      ><i class="fa-solid fa-trash-can"></i>delete</button
+    >
   </div>
   <div class="timer-wrapper">
     <div class:can-start={canStart} class="timer-text">
-      <span class="time">{minutes > 0 ? minutes + ':' : ''}{seconds}</span><span class="decimals">
+      <span class="time">{minutes}{seconds}</span><span class="decimals">
         .{isRunning ? decimals[0] : decimals}</span
       >
     </div>

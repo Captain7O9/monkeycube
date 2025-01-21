@@ -11,12 +11,31 @@ export function convertTime(tineInMilliseconds: number): {
   return { minutes, seconds, milliseconds };
 }
 
-export function formatTime(timeInMilliseconds: number): string {
+export function formatTimeToString(timeInMilliseconds: number): string {
+  // Returns milliseconds as mm:ss.SSS. i.e. 1:23.456
   const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
-  const decimals = milliseconds.toString().padEnd(3, '0');
 
+  const decimals = milliseconds.toString().padStart(3, '0').padEnd(3, '0');
   const displaySeconds = minutes > 0 ? seconds.toString().padStart(2, '0') : seconds;
   return `${minutes > 0 ? minutes : ''}${minutes > 0 ? ':' : ''}${displaySeconds}.${decimals}`;
+}
+
+export function formatTime(timeInMilliseconds: number): {
+  minutes: string;
+  seconds: string;
+  decimals: string;
+} {
+  // Returns milliseconds as an object with minutes, seconds and decimals.
+  // i.e. { minutes: '1', seconds: '23', decimals: '456' }
+  // Handles cases like 0:12.345, 1:00.000, 0:01.010
+
+  const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
+
+  const minutesString = minutes === 0 ? '' : minutes.toString();
+  const secondsString = minutes === 0 ? seconds.toString() : seconds.toString().padStart(2, '0');
+  const decimalsString = milliseconds.toString().padStart(3, '0').padEnd(3, '0');
+
+  return { minutes: minutesString, seconds: secondsString, decimals: decimalsString };
 }
 
 export async function apiFetch({
