@@ -15,18 +15,18 @@ node_modules/
 *.log
 *.tsbuildinfo
 
-# Environment variables
-.env
-
 # IDEs
 .vscode/
 .idea/
 *.iml
+*.http
 
-# macOS
+# OS
 .DS_Store
-
-# Windows
 Thumbs.db
 
-*.http
+# Env
+.env
+.env.*
+!.env.template
+!.env.test
