@@ -10,24 +10,19 @@ function createUser() {
     disabled: false
   };
 
+  const sessionStart = Date.now();
   let userStore = $state(defaultUser);
 
   return {
     // Getters
     get _id() {
-      return userStore;
+      return userStore._id;
     },
     get username() {
       return userStore.username;
     },
-    get full_name() {
-      return userStore.full_name;
-    },
-    get email() {
-      return userStore.email;
-    },
-    get disabled() {
-      return userStore.disabled;
+    get sessionStart() {
+      return sessionStart;
     },
 
     // Setters
@@ -69,8 +64,8 @@ function createUser() {
     },
 
     // API
-    async fetchTimes(username: string = userStore.username) {
-      const response = await apiFetch({ endpoint: `/users/${username}/times` });
+    async fetchTimes(username: string = userStore.username, since: number = 0) {
+      const response = await apiFetch({ endpoint: `/users/${username}/times?since=${since}` });
       return response.content;
     },
     async fetchTime(timeId: string) {

@@ -1,9 +1,11 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
   import { formatTime } from '$lib/utils';
-  import { user } from '$lib/user.svelte';
+  import { user } from '$lib/stores/user.svelte.js';
+  import TimesTable from '$lib/components/TimesTable.svelte';
 
-  const waitTime = 500;
+  const waitTime = 200;
 
   let time = $state(0); // Time in milliseconds
   let minutes = $derived(formatTime(time).minutes);
@@ -24,6 +26,9 @@
 
   let currentTimeId = '';
 
+  let table = $state<TimesTable>();
+  let tablePanelHeight = $state(0);
+
   function startTimer() {
     isRunning = true;
     startTime = Date.now();
@@ -36,7 +41,7 @@
   async function stopTimer() {
     isRunning = false;
     clearInterval(interval);
-    user
+    await user
       .createTime({
         time: time,
         event: '3x3'
@@ -44,6 +49,7 @@
       .then((response) => {
         currentTimeId = response.content._id;
       });
+    await table?.loadTimes();
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -71,6 +77,7 @@
     const response = await user.fetchTime(currentTimeId);
     plusTwoToggle = response.plus_two;
     dnfToggle = response.dnf;
+    await table?.loadTimes();
   }
 
   async function handleToggle(option: 'dnf' | 'plus_two', currentStatus: boolean = false) {
@@ -80,6 +87,7 @@
 
   async function deleteTime() {
     await user.deleteTime(currentTimeId);
+    await table?.loadTimes();
   }
 
   onMount(() => {
@@ -90,7 +98,6 @@
       progressValue = keyDownStartTime === 0 ? 0 : Date.now() - keyDownStartTime;
       canStart = progressValue > waitTime;
     }, 10);
-
     onDestroy(() => {
       clearInterval(progressInterval);
     });
@@ -98,28 +105,60 @@
 </script>
 
 <main>
-  <div class:hidden={canStart || isRunning} class="timer-settings">
-    <button
-      onclick={() => {
-        handleToggle('dnf', dnfToggle);
-      }}
-      class:toggled={dnfToggle}
-      class="setting"
-      ><i class="fa-solid fa-clock"></i>+2
-    </button>
-    <button
-      onclick={() => {
-        handleToggle('plus_two', plusTwoToggle);
-      }}
-      class:toggled={plusTwoToggle}
-      class="setting"
-      ><i class="fa-solid fa-flag"></i>dnf
-    </button>
-    <button onclick={deleteTime} class="delete-button"
-      ><i class="fa-solid fa-trash-can"></i>delete</button
+  {#if !(canStart || isRunning)}
+    <div
+      id="times-table"
+      bind:clientHeight={tablePanelHeight}
+      transition:fly={{ x: '-100%' }}
+      class="panel"
     >
-  </div>
-  <div class="timer-wrapper">
+      <TimesTable
+        bind:this={table}
+        onLoadFunction={loadTime}
+        since={user.sessionStart}
+        maxHeight={tablePanelHeight}
+      />
+      <a href="/times">show all</a>
+    </div>
+
+    <div id="timer-settings" transition:fly={{ y: '-500%' }} class="panel">
+      <button
+        onclick={() => {
+          handleToggle('plus_two', plusTwoToggle);
+        }}
+        class:toggled={plusTwoToggle}
+        class="setting"
+        ><i class="fa-solid fa-clock"></i>+2
+      </button>
+      <div class="separator"></div>
+      <button
+        onclick={() => {
+          handleToggle('dnf', dnfToggle);
+        }}
+        class:toggled={dnfToggle}
+        class="setting"
+        ><i class="fa-solid fa-flag"></i>dnf
+      </button>
+      <div class="separator"></div>
+      <button onclick={deleteTime} class="delete-button"
+        ><i class="fa-solid fa-trash-can"></i>delete
+      </button>
+    </div>
+
+    <div id="a" transition:fly={{ x: '100%' }} class="panel"></div>
+    <div id="b" transition:fly={{ x: '100%' }} class="panel"></div>
+  {:else}
+    <!--Workaround to transition:fly making the element disappear from the DOM-->
+    <div id="timer-settings" class="hidden">
+      <button class="setting"><i class="fa-solid fa-clock"></i>+2</button>
+      <div class="separator"></div>
+      <button class="setting"><i class="fa-solid fa-flag"></i>dnf</button>
+      <div class="separator"></div>
+      <button class="delete-button"><i class="fa-solid fa-trash-can"></i>delete</button>
+    </div>
+  {/if}
+
+  <div id="timer-wrapper">
     <div class:can-start={canStart} class="timer-text">
       <span class="time">{minutes}{seconds}</span><span class="decimals">
         .{isRunning ? decimals[0] : decimals}</span
@@ -127,13 +166,26 @@
     </div>
     <progress class:hidden={isRunning} max={waitTime} value={isRunning ? waitTime : progressValue}
     ></progress>
-    <div class:hidden={canStart || isRunning} class="scramble-text">
-      D' U R F L2 R F U' F' U' B2 R' F R B' L F2 U' L2 R
-    </div>
+  </div>
+  <div class:hidden={canStart || isRunning} class="scramble-text">
+    D' U R F L2 R F U' F' U' B2 R' F R B' L F2 U' L2 R
   </div>
 </main>
 
 <style>
+  .panel {
+    background-color: var(--sub-alt-color);
+    border-radius: var(--border-radius);
+  }
+
+  .separator {
+    align-self: center;
+    width: 0.5em;
+    height: 2em;
+    border-radius: 3px;
+    background-color: var(--bg-color);
+  }
+
   .can-start {
     color: var(--text-color);
   }
@@ -143,20 +195,24 @@
   }
 
   main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    grid-template-rows: min-content 1fr 1fr;
+    grid-template-columns: 1fr 1fr minmax(min-content, 1fr) 1fr 1fr;
     flex-grow: 1;
     user-select: none;
     font-stretch: semi-condensed;
+    margin: 0 20px;
+    overflow: hidden;
+    max-height: 100%;
   }
 
-  .timer-wrapper {
+  #timer-wrapper {
+    align-self: end;
+    padding-bottom: 35px;
+    grid-area: 2 / 2 / 3 / 5;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 40vh;
   }
 
   .timer-text {
@@ -200,20 +256,21 @@
   }
 
   .scramble-text {
-    padding-top: 2vh;
+    grid-area: 3 / 2 / 4 / 5;
     font-size: 2rem;
     transition: opacity 100ms;
+    text-align: center;
   }
 
-  .timer-settings {
-    border-radius: 8px;
+  #timer-settings {
+    display: flex;
+    justify-content: space-between;
+    grid-area: 1 / 3 / 2 / 4;
     margin-bottom: auto;
-    background: var(--sub-alt-color);
-    transition: opacity 100ms;
     font-size: 0.75em;
   }
 
-  .timer-settings > button {
+  #timer-settings > button {
     padding: 1em;
     display: inline-flex;
     align-items: baseline;
@@ -227,7 +284,37 @@
     color: var(--text-color);
   }
 
-  .timer-settings > button > i {
+  #timer-settings > button > i {
     padding-right: 0.5em;
+  }
+
+  #times-table {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    grid-area: 1 / 1 / 4 / 2;
+    padding: 5px;
+  }
+
+  #times-table > a {
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius);
+    text-align: center;
+  }
+
+  #times-table > a:hover {
+    background-color: var(--sub-color);
+    color: var(--bg-color);
+    text-align: center;
+  }
+
+  #a {
+    grid-area: 1 / 5 / 3 / 6;
+    margin-bottom: 2px;
+  }
+
+  #b {
+    margin-top: 2px;
+    grid-area: 3 / 5 / 6 / 6;
   }
 </style>

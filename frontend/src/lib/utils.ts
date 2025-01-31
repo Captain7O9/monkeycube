@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL;
+import { PUBLIC_API_URL as API_URL } from '$env/static/public';
 
 export function convertTime(tineInMilliseconds: number): {
   minutes: number;
@@ -11,8 +11,16 @@ export function convertTime(tineInMilliseconds: number): {
   return { minutes, seconds, milliseconds };
 }
 
+/**
+ * Returns milliseconds as mm:ss.SSS
+ * ```ts
+ * formatTimeToString(12345)
+ * // "12.345"
+ * ```
+ *
+ * @param timeInMilliseconds
+ */
 export function formatTimeToString(timeInMilliseconds: number): string {
-  // Returns milliseconds as mm:ss.SSS. i.e. 1:23.456
   const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
 
   const decimals = milliseconds.toString().padStart(3, '0').padEnd(3, '0');
@@ -20,15 +28,21 @@ export function formatTimeToString(timeInMilliseconds: number): string {
   return `${minutes > 0 ? minutes : ''}${minutes > 0 ? ':' : ''}${displaySeconds}.${decimals}`;
 }
 
+/**
+ * Returns milliseconds as an object with minutes, seconds and decimals:
+ * ```ts
+ * formatTime(83456) // 60000 + 23000 + 00456
+ * // { minutes: '1', seconds: '23', decimals: '456' }
+ * ```
+ * Handles cases like 0:12.345, 1:00.000, 0:01.010
+ *
+ * @param timeInMilliseconds
+ */
 export function formatTime(timeInMilliseconds: number): {
   minutes: string;
   seconds: string;
   decimals: string;
 } {
-  // Returns milliseconds as an object with minutes, seconds and decimals.
-  // i.e. { minutes: '1', seconds: '23', decimals: '456' }
-  // Handles cases like 0:12.345, 1:00.000, 0:01.010
-
   const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
 
   const minutesString = minutes === 0 ? '' : minutes.toString();
@@ -38,6 +52,13 @@ export function formatTime(timeInMilliseconds: number): {
   return { minutes: minutesString, seconds: secondsString, decimals: decimalsString };
 }
 
+/**
+ * Fetch the api
+ * @param endpoint The endpoint to fetch, including the first `/`
+ * @param options
+ * @param sendToken Send Bearer token
+ * @param excludedErrors Ignored errors
+ */
 export async function apiFetch({
   endpoint,
   options = {},
@@ -61,7 +82,7 @@ export async function apiFetch({
   };
 
   const url = `${API_URL}${endpoint}`;
-  console.log(`Fetching ${url} with options:`, request);
+  console.info(`Fetching ${url} with options:`, request);
 
   const response = await fetch(url, request);
 

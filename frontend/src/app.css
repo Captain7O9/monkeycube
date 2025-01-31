@@ -10,6 +10,7 @@
     --error-extra-color: #7e2a33;
     --colorful-error-color: #ca4754;
     --colorful-error-extra-color: #7e2a33;
+    --border-radius: 8px;
 }
 
 body {
@@ -29,6 +30,7 @@ body {
 html, body {
     scroll-behavior: smooth;
     margin: 0;
+    padding: 0;
     background-color: var(--bg-color);
     color: var(--sub-color);
 }
@@ -49,7 +51,8 @@ button {
 }
 
 a, button {
-    transition: color 100ms;
+    transition: background-color 100ms, color 100ms;
+
 }
 
 main {
@@ -58,4 +61,10 @@ main {
 
 .hidden {
     opacity: 0;
+}
+
+.constrain-width {
+    max-width: clamp(500px, 90vw, 1400px);
+    width: 100%;
+    margin: 0 auto;
 }

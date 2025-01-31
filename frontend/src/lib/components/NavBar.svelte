@@ -3,7 +3,7 @@
   import Logo from '$lib/components/Logo.svelte';
 </script>
 
-<div class="navbar-content">
+<div class="navbar-content constrain-width">
   <a href="/" class="logo justify-left lexend-deca"><Logo /></a>
 
   <a href="/times" aria-label="times"><i class="fa-solid fa-clock"></i></a>

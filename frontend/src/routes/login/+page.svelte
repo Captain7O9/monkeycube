@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user } from '$lib/user.svelte';
+  import { user } from '$lib/stores/user.svelte.js';
 
   let username = '';
   let password = '';
@@ -20,7 +20,7 @@
   }
 </script>
 
-<main>
+<main class="constrain-width">
   <h1>Login</h1>
   {#if error}
     <p style="color: red;">{error}</p>

@@ -7,7 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 from .middleware import AuthMiddleware
 
 # Load the .env file
-dotenv_path = os.path.join(os.path.dirname(__file__), r"..\.env")
+dotenv_path = os.path.join(os.path.dirname(__file__), r".env")
 load_success = load_dotenv(dotenv_path)
 print(f"Loading .env file from {dotenv_path}: {load_success}")
 

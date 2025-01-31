@@ -104,9 +104,10 @@ def edit_user(
 @router.get("/{username}/times")
 def list_times_from_user(
     username: str,
+    since: int = 0,
 ) -> list[Time]:
     """
-    Returns all times from a user.
+    Returns all times from a user before the date_limit.
     """
     user = get_user({"username": username})
 
@@ -115,6 +116,10 @@ def list_times_from_user(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
 
-    times = db["times"].find({"user_id": user.id})
+    query = {"user_id": user.id}
+    if since > 0:
+        query["date"] = {"$gte": since}
+
+    times = db["times"].find(query)
 
     return [Time(**time) for time in times]
