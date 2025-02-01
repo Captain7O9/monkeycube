@@ -9,8 +9,11 @@ const defaultUser: User = {
   disabled: false
 };
 
+const defaultTimes: Time[] = [];
+
 const sessionStart = Date.now();
 let userStore = $state(defaultUser);
+let timesStore = $state(defaultTimes);
 
 /**
  * @returns Promise containing the `User` if he is logged in, else `null`.
@@ -27,7 +30,7 @@ async function fetchUser(): Promise<User | null> {
 /**
  * @param newUser Reset the user store if null.
  */
-function set(newUser?: User) {
+function set(newUser?: User | null) {
   userStore = newUser ?? defaultUser;
 }
 
@@ -67,29 +70,31 @@ async function logout() {
 }
 
 /**
- * @param username Username of the user to fetch times from, defaults to current logged-in users.
- * @param since Epoch time to fetch times since. If not provided or 0, fetches all times.
- *
- * @returns Promise containing the fetched `Time[]`.
+ * @param timeId ID of the time entry to fetch.
+ * @returns Promise containing the fetched `Time`.
  */
-async function fetchTimes(username = userStore.username, since = 0): Promise<Time[]> {
-  const response = await apiFetch({ endpoint: `/users/${username}/times?since=${since}` });
+async function fetchOne(timeId: string) {
+  const response = await apiFetch({ endpoint: `/times/${timeId}` });
   return response.content;
 }
 
 /**
- * @param timeId ID of the time entry to fetch.
- * @returns Promise containing the fetched `Time`.
+ * Fetches all times for a user since a certain timestamp and stores them in the `timesStore`.
+ * @param username Username of the user to fetch times for.
+ * @param since Fetch times since this timestamp.
+ * @returns Promise containing the fetched `Time[]`.
  */
-async function fetchTime(timeId: string) {
-  const response = await apiFetch({ endpoint: `/times/${timeId}` });
+async function fetchMany(username = userStore.username, since = 0) {
+  const response = await apiFetch({ endpoint: `/users/${username}/times?since=${since}` });
+  timesStore = response.content;
+  timesStore.sort((a, b) => (a.date ?? 0) - (b.time ?? 0));
   return response.content;
 }
 
 /**
  * @returns Promise containing the created `Time`.
  */
-async function createTime(time: Time) {
+async function createOne(time: Time) {
   const response = await apiFetch({
     endpoint: '/times',
     options: {
@@ -107,7 +112,7 @@ async function createTime(time: Time) {
 /**
  * @returns Promise containing the updated `Time`.
  */
-async function updateTime(time: Time) {
+async function updateOne(time: Partial<Time>) {
   const response = await apiFetch({
     endpoint: `/times/${time._id}`,
     options: {
@@ -126,7 +131,7 @@ async function updateTime(time: Time) {
  *
  * @param timeId ID of the time entry to delete.
  */
-async function deleteTime(timeId: string) {
+async function deleteOne(timeId: string) {
   await apiFetch({
     endpoint: `/times/${timeId}`,
     options: { method: 'DELETE' },
@@ -145,20 +150,23 @@ function createUserStore() {
     get sessionStart() {
       return sessionStart;
     },
+    get times() {
+      return timesStore;
+    },
 
-    // User methods
     set,
     fetchUser,
     isLoggedIn,
     login,
     logout,
 
-    // Time methods
-    fetchTime,
-    fetchTimes,
-    createTime,
-    updateTime,
-    deleteTime
+    time: {
+      fetchOne,
+      fetchMany,
+      createOne,
+      updateOne,
+      deleteOne
+    }
   };
 }
 

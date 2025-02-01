@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { formatTime } from '$lib/utils';
-  import { user } from '$lib/stores/user.svelte.js';
+  import { user } from '$lib/user.svelte.js';
   import TimesTable from '$lib/components/TimesTable.svelte';
 
   const waitTime = 200;
@@ -24,7 +24,9 @@
   let plusTwoToggle = $state(false);
   let dnfToggle = $state(false);
 
-  let currentTimeId = '';
+  let currentTimeId = $derived(
+    (user.times[0]?.date ?? 0 > user.sessionStart) ? user.times[0]._id : ''
+  );
 
   let table = $state<TimesTable>();
   let tablePanelHeight = $state(0);
@@ -41,14 +43,10 @@
   async function stopTimer() {
     isRunning = false;
     clearInterval(interval);
-    await user
-      .createTime({
-        time: time,
-        event: '3x3'
-      })
-      .then((response) => {
-        currentTimeId = response.content._id;
-      });
+    await user.time.createOne({
+      time: time,
+      event: '3x3'
+    });
     await table?.loadTimes();
   }
 
@@ -74,19 +72,28 @@
   }
 
   async function loadTime() {
-    const response = await user.fetchTime(currentTimeId);
+    if (!currentTimeId) {
+      time = 0;
+      return;
+    }
+    const response = await user.time.fetchOne(currentTimeId);
     plusTwoToggle = response.plus_two;
     dnfToggle = response.dnf;
-    await table?.loadTimes();
+    console.log(response.time);
+    time = response.time;
   }
 
   async function handleToggle(option: 'dnf' | 'plus_two', currentStatus: boolean = false) {
-    await user.updateTime({ _id: currentTimeId, [option]: !currentStatus });
-    await loadTime();
+    console.log({ _id: currentTimeId, [option]: !currentStatus });
+    await user.time.updateOne({ _id: currentTimeId, [option]: !currentStatus });
+    await table?.loadTimes();
   }
 
   async function deleteTime() {
-    await user.deleteTime(currentTimeId);
+    if (!currentTimeId) {
+      return;
+    }
+    await user.time.deleteOne(currentTimeId);
     await table?.loadTimes();
   }
 

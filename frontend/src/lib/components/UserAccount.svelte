@@ -1,5 +1,5 @@
 <script>
-  import { user } from '$lib/stores/user.svelte.ts';
+  import { user } from '$lib/user.svelte.js';
 </script>
 
 <div>

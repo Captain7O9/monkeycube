@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Time } from '$lib/types.js';
   import { formatTimeToString } from '$lib/utils.js';
-  import { user } from '$lib/stores/user.svelte.js';
+  import { user } from '$lib/user.svelte.js';
   import ToolTip from '$lib/components/ToolTip.svelte';
 
   let {
@@ -25,10 +25,8 @@
   export async function loadTimes() {
     error = '';
     try {
-      times = await user.fetchTimes(username, since);
+      times = await user.time.fetchMany(username, since);
       times.sort((a, b) => (a.date ?? 0) - (b.time ?? 0));
-
-      console.log(maxHeight, maxRows);
 
       if (maxHeight > 0) {
         const spliceTo = Math.floor(maxHeight / height - 0.5);
@@ -37,6 +35,7 @@
       } else if (maxRows > 0) {
         times = times.splice(0, maxRows);
       }
+      onLoadFunction();
       // eslint-disable-next-line
     } catch (err: any) {
       error = err.message;
@@ -48,13 +47,12 @@
     option: 'dnf' | 'plus_two',
     currentStatus: boolean = false
   ) {
-    await user.updateTime({ _id: timeId, [option]: !currentStatus });
+    await user.time.updateOne({ _id: timeId, [option]: !currentStatus });
     await loadTimes();
-    onLoadFunction();
   }
 
   async function handleDelete(time: Time) {
-    await user.deleteTime(time._id ?? '');
+    await user.time.deleteOne(time._id ?? '');
     await loadTimes();
   }
 
