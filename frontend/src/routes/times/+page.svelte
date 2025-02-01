@@ -1,7 +1,7 @@
 <script lang="ts">
   import TimesTable from '$lib/components/TimesTable.svelte';
   import Chart from 'chart.js/auto';
-  import { user } from '$lib/user.svelte.js';
+  import { user } from '$lib/user.svelte';
   import { onMount } from 'svelte';
 
   let username = $state(user.username);

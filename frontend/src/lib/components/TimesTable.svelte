@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { Time } from '$lib/types.js';
-  import { formatTimeToString } from '$lib/utils.js';
-  import { user } from '$lib/user.svelte.js';
+  import type { Time } from '$lib/types';
+  import { formatTimeToString } from '$lib/utils';
+  import { user } from '$lib/user.svelte';
   import ToolTip from '$lib/components/ToolTip.svelte';
 
   let {
