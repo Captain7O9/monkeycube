@@ -1,5 +1,16 @@
 import { PUBLIC_API_URL as API_URL } from '$env/static/public';
 
+/**
+ * Converts milliseconds to an object with minutes, seconds and milliseconds.
+ * ```ts
+ * convertTime(12345)
+ * // { minutes: 0, seconds: 12, milliseconds: 345 }
+ * ```
+ *
+ * @param tineInMilliseconds
+ *
+ * @returns Object with minutes, seconds and milliseconds.
+ */
 export function convertTime(tineInMilliseconds: number): {
   minutes: number;
   seconds: number;
@@ -12,13 +23,14 @@ export function convertTime(tineInMilliseconds: number): {
 }
 
 /**
- * Returns milliseconds as mm:ss.SSS
  * ```ts
  * formatTimeToString(12345)
  * // "12.345"
  * ```
  *
  * @param timeInMilliseconds
+ *
+ * @returns Time in the format mm:ss.SSS
  */
 export function formatTimeToString(timeInMilliseconds: number): string {
   const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
@@ -29,14 +41,14 @@ export function formatTimeToString(timeInMilliseconds: number): string {
 }
 
 /**
- * Returns milliseconds as an object with minutes, seconds and decimals:
  * ```ts
  * formatTime(83456) // 60000 + 23000 + 00456
  * // { minutes: '1', seconds: '23', decimals: '456' }
  * ```
  * Handles cases like 0:12.345, 1:00.000, 0:01.010
  *
- * @param timeInMilliseconds
+ * @param timeInMilliseconds Time in milliseconds.
+ * @returns Object with minutes, seconds and decimals.
  */
 export function formatTime(timeInMilliseconds: number): {
   minutes: string;
@@ -53,11 +65,13 @@ export function formatTime(timeInMilliseconds: number): {
 }
 
 /**
- * Fetch the api
- * @param endpoint The endpoint to fetch, including the first `/`
- * @param options
- * @param sendToken Send Bearer token
- * @param excludedErrors Ignored errors
+ * Fetches data from the API.
+ * @param endpoint API endpoint to fetch.
+ * @param options Request options.
+ * @param sendToken Whether to send the user token.
+ * @param excludedErrors List of status codes to ignore.
+ *
+ * @returns Promise containing the response content and status code.
  */
 export async function apiFetch({
   endpoint,
