@@ -4,24 +4,25 @@
 
 <div data-content={content}>{@render children()}</div>
 
-<style>
+<style lang="scss">
   div {
     position: relative;
-  }
-  div::before {
-    position: absolute;
-    content: attr(data-content);
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 2em;
-    color: var(--text-color);
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 2px 4px;
-    border-radius: 3px;
-    display: none;
-    z-index: 1000;
-  }
-  div:hover::before {
-    display: block;
+    &::before {
+      position: absolute;
+      content: attr(data-content);
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 2em;
+      color: var(--text-color);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 2px 4px;
+      border-radius: 3px;
+      display: none;
+      z-index: 1000;
+    }
+
+    &:hover::before {
+      display: block;
+    }
   }
 </style>

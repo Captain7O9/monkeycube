@@ -37,29 +37,26 @@
     margin: 0 auto;
     padding: 20px 0;
     min-height: calc(100vh - 40px);
-  }
 
-  .content {
-    display: flex;
-    flex-grow: 1;
-  }
-
-  .footer {
-    display: flex;
-    justify-content: center;
-    font-size: 0.75rem;
-  }
-
-  .footer a {
-    display: flex;
-    align-content: center;
-    justify-content: center;
-    gap: 5px;
-    color: var(--text-secondary);
-    width: min-content;
-  }
-
-  .footer a:hover {
-    color: var(--text-color);
+    .content {
+      display: flex;
+      flex-grow: 1;
+    }
+    .footer {
+      display: flex;
+      justify-content: center;
+      font-size: 0.75rem;
+      a {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        gap: 5px;
+        color: var(--text-secondary);
+        width: min-content;
+        &:hover {
+          color: var(--text-color);
+        }
+      }
+    }
   }
 </style>

@@ -6,17 +6,6 @@
 </h1>
 
 <style>
-  .text .top {
-    position: absolute;
-    left: 0.35em;
-    font-size: 0.325em;
-    line-height: 0.325em;
-    color: var(--sub-color);
-    transition:
-      color 0.125s,
-      opacity 0.125s;
-  }
-
   .text {
     position: relative;
     font-size: 2rem;
@@ -29,5 +18,16 @@
     margin-block-start: unset;
     margin-block-end: unset;
     margin-top: -0.23em;
+
+    .top {
+      position: absolute;
+      left: 0.35em;
+      font-size: 0.325em;
+      line-height: 0.325em;
+      color: var(--sub-color);
+      transition:
+        color 0.125s,
+        opacity 0.125s;
+    }
   }
 </style>

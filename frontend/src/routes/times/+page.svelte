@@ -61,27 +61,27 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
 
-  h1 {
-    color: var(--text-color);
-  }
+    h1 {
+      color: var(--text-color);
+    }
 
-  .table-load {
-    color: var(--text-color);
-    background-color: var(--sub-alt-color);
-    padding: 5px;
-    width: 100%;
-    margin-top: 5px;
-    border-radius: var(--border-radius);
-  }
+    .table-load {
+      color: var(--text-color);
+      background-color: var(--sub-alt-color);
+      padding: 5px;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: var(--border-radius);
 
-  .table-load:hover {
-    background-color: var(--text-color);
-    color: var(--sub-alt-color);
-  }
+      &:hover {
+        background-color: var(--text-color);
+        color: var(--sub-alt-color);
+      }
+    }
 
-  canvas {
-    margin-top: 10px;
+    canvas {
+      margin-top: 10px;
+    }
   }
 </style>

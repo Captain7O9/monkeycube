@@ -126,7 +126,7 @@
   </tbody>
 </table>
 
-<style>
+<style lang="scss">
   .toggled {
     color: var(--main-color);
   }
@@ -136,53 +136,53 @@
     text-align: left;
     border-collapse: collapse;
     table-layout: fixed;
-  }
 
-  th {
-    font-weight: normal;
-  }
-  td {
-    padding: 1rem;
-  }
-  thead th {
-    font-size: 0.75rem;
-    padding: 0.3rem 1rem;
-  }
-  tbody {
-    color: var(--text-color);
-  }
+    th {
+      font-weight: normal;
+    }
 
-  tbody tr:nth-child(odd) td {
-    background-color: var(--sub-alt-color);
-  }
-  tbody tr:nth-child(even) td {
-    background-color: var(--bg-color);
-  }
-  th:first-child,
-  td:first-child {
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
-  }
-  th:last-child,
-  td:last-child {
-    border-radius: 0 var(--border-radius) var(--border-radius) 0;
-  }
+    td {
+      padding: 1rem;
+    }
 
-  thead th {
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-color);
-  }
+    thead th {
+      font-size: 0.75rem;
+      padding: 0.3rem 1rem;
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-color);
+    }
 
-  .options {
-    color: var(--sub-color);
-    width: 65px;
-  }
+    tbody {
+      color: var(--text-color);
+      tr:nth-child(odd) td {
+        background-color: var(--sub-alt-color);
+      }
+      tr:nth-child(even) td {
+        background-color: var(--bg-color);
+      }
+    }
 
-  .delete-button:hover {
-    color: var(--error-color);
-  }
+    th:first-child,
+    td:first-child {
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+    th:last-child,
+    td:last-child {
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
 
-  .setting:hover {
-    color: var(--text-color);
+    .options {
+      color: var(--sub-color);
+      width: 65px;
+    }
+
+    .delete-button:hover {
+      color: var(--error-color);
+    }
+
+    .setting:hover {
+      color: var(--text-color);
+    }
   }
 </style>
