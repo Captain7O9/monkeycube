@@ -1,18 +1,31 @@
 <script lang="ts">
   import TimesTable from '$lib/components/TimesTable.svelte';
   import Chart from 'chart.js/auto';
-  import { user } from '$lib/user.svelte';
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
 
-  let username = $state(user.username);
+  let { data } = $props();
+
+  let username = $derived(data.username);
+  let usernameInput = $state('');
 
   let table = $state<TimesTable>();
-  let maxRows = $state(10);
 
+  let maxRows = $state(10);
   let chartValues = [20, 10, 5, 2, 20, 30, 45];
+
   let chartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
   let ctx;
   let chartCanvas = $state<HTMLCanvasElement>();
+
+  $effect(() => {
+    console.log('table reloaded');
+    table?.loadTimes();
+  });
+
+  $effect(() => {
+    usernameInput = username;
+  });
 
   onMount(() => {
     ctx = chartCanvas?.getContext('2d');
@@ -30,21 +43,26 @@
         ]
       }
     });
+    table?.loadTimes();
   });
 </script>
 
 <main class="constrain-width">
-  <div id="user-input">
-    <h1>Times</h1>
+  <div>
     <label for="username">Username:</label>
-    <input type="text" id="username" bind:value={username} required />
-    <button onclick={table?.loadTimes}>Load Times</button>
+    <input bind:value={usernameInput} type="text" id="username" required />
+    <button
+      onclick={() => {
+        goto(`/user/${usernameInput}`);
+      }}>Load Times</button
+    >
   </div>
+  <h1>Times ({username})</h1>
   <div id="times-table">
     <TimesTable bind:this={table} {username} {maxRows} />
     <button
       onclick={() => {
-        maxRows += 5; // Toggle maxRows 0 <-> 10
+        maxRows += 5;
         table?.loadTimes();
       }}
       class="table-load"

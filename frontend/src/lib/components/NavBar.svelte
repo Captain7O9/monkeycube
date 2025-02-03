@@ -6,7 +6,7 @@
 <div class="navbar-content constrain-width">
   <a href="/" class="logo lexend-deca"><Logo /></a>
 
-  <a href="/times" aria-label="times"><i class="fa-solid fa-clock"></i></a>
+  <a href="/user" aria-label="times"><i class="fa-solid fa-clock"></i></a>
   <a href="/login" class="login">
     <UserAccount />
   </a>

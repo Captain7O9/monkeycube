@@ -39,6 +39,7 @@
       // eslint-disable-next-line
     } catch (err: any) {
       error = err.message;
+      times = [];
     }
   }
 
@@ -163,13 +164,14 @@
       }
     }
 
-    th:first-child,
-    td:first-child {
-      border-radius: var(--border-radius) 0 0 var(--border-radius);
-    }
-    th:last-child,
-    td:last-child {
-      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    th,
+    td {
+      &:first-child {
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+      }
+      &:last-child {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      }
     }
 
     .options {

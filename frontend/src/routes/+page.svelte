@@ -305,11 +305,13 @@
     }
 
     .a {
+      @include panel;
       grid-area: 1 / 5 / 3 / 6;
       margin-bottom: 2px;
     }
 
     .b {
+      @include panel;
       margin-top: 2px;
       grid-area: 3 / 5 / 6 / 6;
     }
