@@ -26,7 +26,6 @@
     error = '';
     try {
       times = await user.time.fetchMany(username, since);
-      times.sort((a, b) => (a.date ?? 0) - (b.time ?? 0));
 
       if (maxHeight > 0) {
         const spliceTo = Math.floor(maxHeight / height - 0.5);

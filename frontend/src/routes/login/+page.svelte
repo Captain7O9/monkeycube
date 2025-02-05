@@ -1,9 +1,9 @@
 <script lang="ts">
   import { user } from '$lib/user.svelte.js';
 
-  let username = '';
-  let password = '';
-  let error = '';
+  let username = $state('');
+  let password = $state('');
+  let error = $state('');
 
   async function handleLogin() {
     error = '';
@@ -26,7 +26,7 @@
     <p style="color: red;">{error}</p>
   {/if}
 
-  <form on:submit|preventDefault={handleLogin}>
+  <form onsubmit={handleLogin}>
     <label for="username">Username:</label>
     <input type="text" id="username" bind:value={username} />
 
@@ -36,10 +36,9 @@
     <button type="submit">Login</button>
   </form>
 
-  <button on:click={user.logout}>Logout</button>
+  <button onclick={user.logout}>Logout</button>
 
   <br />
 
-  <button>Fetch User</button>
   <p>Current user: {user.isLoggedIn() ? user.username : 'Not logged in'}</p>
 </main>

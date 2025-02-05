@@ -3,6 +3,9 @@
   import Chart from 'chart.js/auto';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { user } from '$lib/user.svelte';
+  import type { Time } from '$lib/types';
+  import { styles } from '$lib/style.svelte';
 
   let { data } = $props();
 
@@ -12,14 +15,32 @@
   let table = $state<TimesTable>();
 
   let maxRows = $state(10);
-  let chartValues = [20, 10, 5, 2, 20, 30, 45];
 
-  let chartLabels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-  let ctx;
+  let chartData: Time[] = $state([]);
+
+  let chart: Chart;
   let chartCanvas = $state<HTMLCanvasElement>();
 
+  async function onTableLoad() {
+    console.log('Table loaded');
+    chartData = await user.time.fetchMany(username);
+    if (chart) {
+      chart.data = {
+        labels: chartData.map((time) => new Date(time.date ?? 0).toLocaleDateString()),
+        datasets: [
+          {
+            label: 'Times',
+            backgroundColor: styles.current['--main-color'],
+            borderColor: styles.current['--main-color'],
+            data: chartData.map((time) => time.time)
+          }
+        ]
+      };
+    }
+    chart?.update('none');
+  }
+
   $effect(() => {
-    console.log('table reloaded');
     table?.loadTimes();
   });
 
@@ -27,23 +48,25 @@
     usernameInput = username;
   });
 
-  onMount(() => {
-    ctx = chartCanvas?.getContext('2d');
-    new Chart(ctx ?? '', {
+  onMount(async () => {
+    table?.loadTimes();
+    chartData = await user.time.fetchMany(username);
+
+    const ctx = chartCanvas?.getContext('2d');
+    chart = new Chart(ctx ?? '', {
       type: 'line',
       data: {
-        labels: chartLabels,
+        labels: chartData.map((time) => new Date(time.date ?? 0).toLocaleDateString()),
         datasets: [
           {
-            label: 'Revenue',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: chartValues
+            label: 'Times',
+            backgroundColor: styles.current['--main-color'],
+            borderColor: styles.current['--main-color'],
+            data: chartData.map((time) => time.time)
           }
         ]
       }
     });
-    table?.loadTimes();
   });
 </script>
 
@@ -54,12 +77,13 @@
     <button
       onclick={() => {
         goto(`/user/${usernameInput}`);
-      }}>Load Times</button
-    >
+      }}
+      >Load Times
+    </button>
   </div>
   <h1>Times ({username})</h1>
   <div id="times-table">
-    <TimesTable bind:this={table} {username} {maxRows} />
+    <TimesTable bind:this={table} {username} {maxRows} onLoadFunction={onTableLoad} />
     <button
       onclick={() => {
         maxRows += 5;

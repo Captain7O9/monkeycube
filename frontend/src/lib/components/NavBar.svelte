@@ -7,6 +7,7 @@
   <a href="/" class="logo lexend-deca"><Logo /></a>
 
   <a href="/user" aria-label="times"><i class="fa-solid fa-clock"></i></a>
+  <a href="/settings" aria-label="settings"><i class="fa-solid fa-cog"></i></a>
   <a href="/login" class="login">
     <UserAccount />
   </a>

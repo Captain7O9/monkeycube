@@ -2,11 +2,12 @@
   import '../app.css';
   import NavBar from '$lib/components/NavBar.svelte';
   import { onMount } from 'svelte';
+  import { styles } from '$lib/style.svelte';
 
   let { children } = $props();
 
   onMount(() => {
-    document.documentElement.setAttribute('data-theme', 'default');
+    styles.load();
   });
 </script>
 

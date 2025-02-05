@@ -120,7 +120,7 @@
         since={user.sessionStart}
         maxHeight={tablePanelHeight}
       />
-      <a href="/times">show all</a>
+      <a href="/user">show all</a>
     </div>
 
     <div class="timer-settings" transition:fly={{ y: '-500%' }}>
