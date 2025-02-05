@@ -13,6 +13,22 @@ const defaultStyles = {
   '--border-radius': '8px'
 };
 
+const stylePresets: { [key: string]: { [key: string]: string } } = {
+  default: defaultStyles,
+  monokai: {
+    '--bg-color': '#272822',
+    '--main-color': '#a6e22e',
+    '--caret-color': '#66d9ef',
+    '--sub-color': '#e6db74',
+    '--sub-alt-color': '#1f201b',
+    '--text-color': '#e2e2dc',
+    '--error-color': '#f92672',
+    '--error-extra-color': '#fd971f',
+    '--colorful-error-color': '#f92672',
+    '--colorful-error-extra-color': '#fd971f'
+  }
+};
+
 let styleStore = $state<{ [key: string]: string }>(defaultStyles);
 
 function set(newStyles: { [key: string]: string }) {
@@ -49,6 +65,9 @@ function createStyleStore() {
     },
     get default() {
       return defaultStyles;
+    },
+    get presets() {
+      return stylePresets;
     },
     set,
 

@@ -18,9 +18,7 @@
   }
 
   function resetStyles() {
-    console.log('styles reset');
     customStyles = styles.default;
-    applyStyles();
   }
 
   $effect(() => {
@@ -35,18 +33,31 @@
 <main class="constrain-width">
   <h1>Colors</h1>
   <!--  TODO: Handle colors and px styles-->
-  <div class="color-controls">
-    {#each Object.entries(styles.default) as [key]}
-      {#if key.includes('color')}
-        <div class="color-control">
-          <label for={key}>{key}:</label>
-          <input type="color" bind:value={customStyles[key]} />
-        </div>
-      {/if}
-    {/each}
+  <div class="settings">
+    <div class="color-controls">
+      {#each Object.entries(styles.default) as [key]}
+        {#if key.includes('color')}
+          <section>
+            <label for={key}>{key}:</label>
+            <input type="color" bind:value={customStyles[key]} />
+          </section>
+        {/if}
+      {/each}
+      <button onclick={resetStyles}>Reset</button>
+      <button onclick={saveStyles}>Apply</button>
+    </div>
+    <div class="presets">
+      {#each Object.entries(styles.presets) as [preset]}
+        <button
+          onclick={() => {
+            customStyles = styles.presets[preset];
+            applyStyles();
+          }}>{preset}</button
+        >
+      {/each}
+    </div>
   </div>
-  <button onclick={resetStyles}>Reset</button>
-  <button onclick={saveStyles}>Apply</button>
+  <!--  Note: Styles will auto apply onDestroy, but not on page refresh/leave-->
 </main>
 
 <style lang="scss">
@@ -55,13 +66,23 @@
     border-radius: var(--border-radius);
   }
 
-  .color-controls {
-    width: 30%;
-  }
+  .settings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 
-  .color-control {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
+    .color-controls {
+      section {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    .presets {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+    }
   }
 </style>
