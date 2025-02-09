@@ -2,8 +2,9 @@
   import { onDestroy, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { formatTime } from '$lib/utils';
-  import { user } from '$lib/user.svelte.js';
+  import { user } from '$lib/stores/user.svelte.js';
   import TimesTable from '$lib/components/TimesTable.svelte';
+  import Cube from '$lib/components/Cube.svelte';
 
   const waitTime = 200;
 
@@ -147,8 +148,12 @@
       </button>
     </div>
 
-    <div class="a" transition:fly={{ x: '100%' }}></div>
-    <div class="b" transition:fly={{ x: '100%' }}></div>
+    <div class="right-panel-container" transition:fly={{ x: '100%' }}>
+      <div class="a"></div>
+      <div class="scramble-display-timer">
+        <Cube scramble={"L2 U' L2 U B2 L2 R2 U' R2 U' F2 U' R' D' F U F2 L2 R F' D U'"} />
+      </div>
+    </div>
   {:else}
     <!--Workaround to transition:fly making the element disappear from the DOM-->
     <div class="timer-settings hidden">
@@ -169,6 +174,7 @@
     <progress class:hidden={isRunning} max={waitTime} value={isRunning ? waitTime : progressValue}
     ></progress>
   </div>
+
   <div class="scramble" class:hidden={canStart || isRunning}>
     D' U R F L2 R F U' F' U' B2 R' F R B' L F2 U' L2 R
   </div>
@@ -214,6 +220,7 @@
         text-align: center;
       }
     }
+
     .timer-settings {
       @include panel;
 
@@ -252,6 +259,7 @@
         background-color: var(--bg-color);
       }
     }
+
     .timer {
       align-self: end;
       padding-bottom: 35px;
@@ -280,16 +288,19 @@
         border: none;
         background: var(--sub-alt-color);
       }
+
       progress::-moz-progress-bar {
         border: none;
         border-radius: 3px;
         background: var(--main-color);
       }
+
       progress::-webkit-progress-value {
         border: none;
         border-radius: 3px;
         background: var(--main-color);
       }
+
       progress::-webkit-progress-bar {
         border: none;
         border-radius: 3px;
@@ -304,16 +315,23 @@
       text-align: center;
     }
 
-    .a {
-      @include panel;
-      grid-area: 1 / 5 / 3 / 6;
-      margin-bottom: 2px;
-    }
+    .right-panel-container {
+      grid-area: 1 / 5 / 5 / 6;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
 
-    .b {
-      @include panel;
-      margin-top: 2px;
-      grid-area: 3 / 5 / 6 / 6;
+      .a {
+        @include panel;
+        flex-grow: 1;
+      }
+
+      .scramble-display-timer {
+        @include panel;
+        display: flex;
+        justify-content: center;
+        padding: 10px;
+      }
     }
   }
 </style>

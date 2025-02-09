@@ -10,7 +10,13 @@ const defaultStyles = {
   '--error-extra-color': '#7e2a33',
   '--colorful-error-color': '#ca4754',
   '--colorful-error-extra-color': '#7e2a33',
-  '--border-radius': '8px'
+  '--border-radius': '8px',
+  '--white': '#fff',
+  '--yellow': '#f7c331',
+  '--green': '#2ecc71',
+  '--blue': '#3498db',
+  '--red': '#e74c3c',
+  '--orange': '#f39c12'
 };
 
 const stylePresets: { [key: string]: { [key: string]: string } } = {
@@ -25,7 +31,31 @@ const stylePresets: { [key: string]: { [key: string]: string } } = {
     '--error-color': '#f92672',
     '--error-extra-color': '#fd971f',
     '--colorful-error-color': '#f92672',
-    '--colorful-error-extra-color': '#fd971f'
+    '--colorful-error-extra-color': '#fd971f',
+    '--white': '#fff',
+    '--yellow': '#f7c331',
+    '--green': '#2ecc71',
+    '--blue': '#3498db',
+    '--red': '#e74c3c',
+    '--orange': '#f39c12'
+  },
+  tangerine: {
+    '--bg-color': '#ffede0',
+    '--main-color': '#fe5503',
+    '--caret-color': '#5d8500',
+    '--sub-color': '#ff9562',
+    '--sub-alt-color': '#fdd3bf',
+    '--text-color': '#3d1705',
+    '--error-color': '#7fb500',
+    '--error-extra-color': '#5f8700',
+    '--colorful-error-color': '#7fb500',
+    '--colorful-error-extra-color': '#5f8700',
+    '--white': '#fff',
+    '--yellow': '#f7c331',
+    '--green': '#2ecc71',
+    '--blue': '#3498db',
+    '--red': '#e74c3c',
+    '--orange': '#f39c12'
   }
 };
 

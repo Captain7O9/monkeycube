@@ -1,4 +1,4 @@
-import { user } from '$lib/user.svelte';
+import { user } from '$lib/stores/user.svelte.js';
 import { error, redirect } from '@sveltejs/kit';
 
 export const load = ({ params }) => {

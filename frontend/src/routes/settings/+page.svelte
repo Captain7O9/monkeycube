@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { styles } from '$lib/style.svelte';
+  import { styles } from '$lib/stores/style.svelte.js';
   import { onDestroy } from 'svelte';
 
   let customStyles = $state<{ [key: string]: string }>(styles.current);
 
   function applyStyles() {
     for (const [key] of Object.entries(styles.default)) {
-      if (key.includes('color')) {
+      if (!key.includes('border')) {
         document.documentElement.style.setProperty(key, customStyles[key]);
       }
     }
@@ -36,7 +36,7 @@
   <div class="settings">
     <div class="color-controls">
       {#each Object.entries(styles.default) as [key]}
-        {#if key.includes('color')}
+        {#if !key.includes('border')}
           <section>
             <label for={key}>{key}:</label>
             <input type="color" bind:value={customStyles[key]} />

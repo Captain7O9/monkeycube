@@ -3,9 +3,9 @@
   import Chart from 'chart.js/auto';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { user } from '$lib/user.svelte';
+  import { user } from '$lib/stores/user.svelte.js';
   import type { Time } from '$lib/types';
-  import { styles } from '$lib/style.svelte';
+  import { styles } from '$lib/stores/style.svelte.js';
 
   let { data } = $props();
 

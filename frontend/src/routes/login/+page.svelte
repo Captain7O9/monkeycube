@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { user } from '$lib/user.svelte.js';
+  import { user } from '$lib/stores/user.svelte.js';
 
   let username = $state('');
   let password = $state('');
