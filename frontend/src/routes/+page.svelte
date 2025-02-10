@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { formatTime, isMove } from '$lib/utils';
+  import { formatTime } from '$lib/utils';
   import { user } from '$lib/stores/user.svelte.js';
   import TimesTable from '$lib/components/TimesTable.svelte';
   import Cube from '$lib/components/Cube.svelte';
@@ -36,6 +36,7 @@
   let tablePanelHeight = $state(0);
 
   let scramble: string = $state('');
+  const scrambleRegex = new RegExp(/(U'|U2|U)|(R'|R2|R)|(F'|F2|F)|(D'|D2|D)|(L'|L2|L)|(B'|B2|B)/g);
 
   function startTimer() {
     isRunning = true;
@@ -59,6 +60,7 @@
 
   function onKeyDown(event: KeyboardEvent) {
     if (event.code === 'Space') {
+      (document.activeElement as HTMLElement)?.blur();
       if (keyDownStartTime === 0) {
         keyDownStartTime = Date.now();
       }
@@ -107,6 +109,24 @@
     scramble = (await randomScrambleForEvent(eventID)).toString();
   }
 
+  function uppercase(node: HTMLDivElement) {
+    const transform = () => {
+      const matched = node.innerText.toUpperCase().match(scrambleRegex);
+      matched?.forEach((match) => {
+        node.innerText = node.innerText.replace(match, match.toUpperCase());
+      });
+      node.innerText = matched ? matched.join(' ') : '';
+
+      // Put cursor at the end of the text
+      window.getSelection()?.selectAllChildren(node);
+      window.getSelection()?.collapseToEnd();
+    };
+
+    node.addEventListener('input', transform, { capture: true });
+
+    transform();
+  }
+
   onMount(() => {
     document.addEventListener('keyup', onKeyUp);
     document.addEventListener('keydown', onKeyDown);
@@ -145,7 +165,6 @@
         class:toggled={plusTwoToggle}
         ><i class="fa-solid fa-clock"></i>+2
       </button>
-      <div class="separator"></div>
       <button
         class="dnf"
         onclick={() => {
@@ -153,6 +172,15 @@
         }}
         class:toggled={dnfToggle}
         ><i class="fa-solid fa-flag"></i>dnf
+      </button>
+      <div class="separator"></div>
+      <button
+        class="scramble-reset"
+        onclick={async () => {
+          await getNewScramble('333');
+        }}
+      >
+        <i class="fa-solid fa-arrow-rotate-back"></i>scramble
       </button>
       <div class="separator"></div>
       <button class="delete" onclick={deleteTime}
@@ -163,14 +191,7 @@
     <div class="right-panel-container" transition:fly={{ x: '100%' }}>
       <div class="a"></div>
       <div class="scramble-display-timer">
-        <Cube
-          scramble={new Alg(
-            scramble
-              .split('')
-              .map((move) => (isMove(move) ? move : ''))
-              .join(' ')
-          )}
-        />
+        <Cube scramble={new Alg(scramble)} />
       </div>
     </div>
   {:else}
@@ -195,18 +216,17 @@
   </div>
 
   <div class="scramble" class:hidden={canStart || isRunning}>
-    <input
-      type="text"
-      bind:value={scramble}
-      onfocus={() => {
-        document.removeEventListener('keyup', onKeyUp);
-        document.removeEventListener('keydown', onKeyDown);
+    <div
+      contenteditable="true"
+      bind:innerText={scramble}
+      use:uppercase
+      onblur={async () => {
+        window.getSelection()?.removeAllRanges();
+        if (!scramble) {
+          await getNewScramble('333');
+        }
       }}
-      onblur={() => {
-        document.addEventListener('keyup', onKeyUp);
-        document.addEventListener('keydown', onKeyDown);
-      }}
-    />
+    ></div>
   </div>
 </main>
 
@@ -264,13 +284,6 @@
       margin-bottom: auto;
       font-size: 0.75em;
 
-      .plus-two,
-      .dnf {
-        &:hover {
-          color: var(--text-color);
-        }
-      }
-
       .delete:hover {
         color: var(--error-color);
       }
@@ -282,6 +295,10 @@
 
         i {
           padding-right: 0.5em;
+        }
+
+        &:hover {
+          color: var(--text-color);
         }
       }
 
@@ -347,25 +364,48 @@
       font-size: 2rem;
       transition: opacity 100ms;
       text-align: center;
+      overflow: auto;
+
+      div {
+        margin: 1vh auto;
+        width: 85%;
+        background-color: transparent;
+        border: transparent;
+        border-radius: var(--border-radius);
+        font-size: 1.5rem;
+        color: var(--sub-color);
+        word-spacing: 0.5rem;
+        resize: none;
+        overflow: hidden;
+
+        &:focus {
+          outline: solid var(--sub-color) 2px;
+          outline-offset: -1px;
+        }
+        &::selection {
+          background-color: var(--sub-color);
+          color: var(--bg-color);
+        }
+      }
+    }
+  }
+
+  .right-panel-container {
+    grid-area: 1 / 5 / 5 / 6;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .a {
+      @include panel;
+      flex-grow: 1;
     }
 
-    .right-panel-container {
-      grid-area: 1 / 5 / 5 / 6;
+    .scramble-display-timer {
+      @include panel;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
-
-      .a {
-        @include panel;
-        flex-grow: 1;
-      }
-
-      .scramble-display-timer {
-        @include panel;
-        display: flex;
-        justify-content: center;
-        padding: 10px;
-      }
+      justify-content: center;
+      padding: 10px;
     }
   }
 </style>
