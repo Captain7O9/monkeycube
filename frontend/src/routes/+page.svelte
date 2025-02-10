@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
-  import { formatTime } from '$lib/utils';
+  import { formatTime, isMove } from '$lib/utils';
   import { user } from '$lib/stores/user.svelte.js';
   import TimesTable from '$lib/components/TimesTable.svelte';
   import Cube from '$lib/components/Cube.svelte';
@@ -163,7 +163,14 @@
     <div class="right-panel-container" transition:fly={{ x: '100%' }}>
       <div class="a"></div>
       <div class="scramble-display-timer">
-        <Cube scramble={new Alg(scramble)} />
+        <Cube
+          scramble={new Alg(
+            scramble
+              .split('')
+              .map((move) => (isMove(move) ? move : ''))
+              .join(' ')
+          )}
+        />
       </div>
     </div>
   {:else}

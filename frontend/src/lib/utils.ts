@@ -1,4 +1,5 @@
 import { PUBLIC_API_URL as API_URL } from '$env/static/public';
+import type { Move } from '$lib/types';
 
 /**
  * Converts milliseconds to an object with minutes, seconds and milliseconds.
@@ -108,4 +109,27 @@ export async function apiFetch({
     const error = await response.json();
     throw new Error(error.detail || 'Request failed');
   }
+}
+
+export function isMove(input: string): input is Move {
+  return [
+    'U',
+    'U2',
+    "U'",
+    'R',
+    'R2',
+    "R'",
+    'F',
+    'F2',
+    "F'",
+    'D',
+    'D2',
+    "D'",
+    'L',
+    'L2',
+    "L'",
+    'B',
+    'B2',
+    "B'"
+  ].includes(input);
 }
