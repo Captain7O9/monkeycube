@@ -5,6 +5,8 @@
   import { user } from '$lib/stores/user.svelte.js';
   import TimesTable from '$lib/components/TimesTable.svelte';
   import Cube from '$lib/components/Cube.svelte';
+  import { Alg } from 'cubing/alg';
+  import { randomScrambleForEvent } from 'cubing/scramble';
 
   const waitTime = 200;
 
@@ -21,16 +23,19 @@
   let progressValue = $state(0);
 
   let interval: ReturnType<typeof setInterval>;
+  let progressInterval: ReturnType<typeof setInterval>;
 
   let plusTwoToggle = $state(false);
   let dnfToggle = $state(false);
 
   let currentTimeId = $derived(
-    (user.times[0]?.date ?? 0 > user.sessionStart) ? user.times[0]._id : ''
+    (user.times[0]?.date ?? 0) > user.sessionStart ? user.times[0]._id : ''
   );
 
   let table = $state<TimesTable>();
   let tablePanelHeight = $state(0);
+
+  let scramble: string = $state('');
 
   function startTimer() {
     isRunning = true;
@@ -49,6 +54,7 @@
       event: '3x3'
     });
     await table?.loadTimes();
+    await getNewScramble('333');
   }
 
   function onKeyDown(event: KeyboardEvent) {
@@ -80,12 +86,10 @@
     const response = await user.time.fetchOne(currentTimeId);
     plusTwoToggle = response.plus_two;
     dnfToggle = response.dnf;
-    console.log(response.time);
     time = response.time;
   }
 
   async function handleToggle(option: 'dnf' | 'plus_two', currentStatus: boolean = false) {
-    console.log({ _id: currentTimeId, [option]: !currentStatus });
     await user.time.updateOne({ _id: currentTimeId, [option]: !currentStatus });
     await table?.loadTimes();
   }
@@ -98,17 +102,24 @@
     await table?.loadTimes();
   }
 
+  async function getNewScramble(eventID: string) {
+    console.log('Fetch new scramble');
+    scramble = (await randomScrambleForEvent(eventID)).toString();
+  }
+
   onMount(() => {
     document.addEventListener('keyup', onKeyUp);
     document.addEventListener('keydown', onKeyDown);
 
-    const progressInterval = setInterval(() => {
+    progressInterval = setInterval(() => {
       progressValue = keyDownStartTime === 0 ? 0 : Date.now() - keyDownStartTime;
       canStart = progressValue > waitTime;
     }, 10);
-    onDestroy(() => {
-      clearInterval(progressInterval);
-    });
+
+    getNewScramble('333');
+  });
+  onDestroy(() => {
+    clearInterval(progressInterval);
   });
 </script>
 
@@ -120,6 +131,7 @@
         onLoadFunction={loadTime}
         since={user.sessionStart}
         maxHeight={tablePanelHeight}
+        displayError={false}
       />
       <a href="/user">show all</a>
     </div>
@@ -151,7 +163,7 @@
     <div class="right-panel-container" transition:fly={{ x: '100%' }}>
       <div class="a"></div>
       <div class="scramble-display-timer">
-        <Cube scramble={"L2 U' L2 U B2 L2 R2 U' R2 U' F2 U' R' D' F U F2 L2 R F' D U'"} />
+        <Cube scramble={new Alg(scramble)} />
       </div>
     </div>
   {:else}
@@ -176,7 +188,18 @@
   </div>
 
   <div class="scramble" class:hidden={canStart || isRunning}>
-    D' U R F L2 R F U' F' U' B2 R' F R B' L F2 U' L2 R
+    <input
+      type="text"
+      bind:value={scramble}
+      onfocus={() => {
+        document.removeEventListener('keyup', onKeyUp);
+        document.removeEventListener('keydown', onKeyDown);
+      }}
+      onblur={() => {
+        document.addEventListener('keyup', onKeyUp);
+        document.addEventListener('keydown', onKeyDown);
+      }}
+    />
   </div>
 </main>
 
@@ -198,6 +221,10 @@
 
     .can-start {
       color: var(--text-color);
+    }
+
+    .toggled {
+      color: var(--main-color);
     }
 
     .times-table {

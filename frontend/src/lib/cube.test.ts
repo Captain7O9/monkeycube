@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { CubeInstance } from '$lib/cube';
 import type { Move } from '$lib/types';
+import { Alg } from 'cubing/alg';
 
 const EXPECTED_CUBE = {
   default: new CubeInstance().default,
@@ -460,36 +461,8 @@ describe('Test moves', () => {
   });
 });
 
-it('can do moves from string', () => {
-  const scramble = "R' F2 D2 L2 F2 U2 F2 R' F2 L F2 U L' R D U' B U F2 R2";
-  expect(cube.state).toStrictEqual(EXPECTED_CUBE.default);
-  cube.doMoves(scramble);
-  expect(cube.state).toStrictEqual(EXPECTED_CUBE.scramble);
-});
-
-it('can do moves from list', () => {
-  const scramble = [
-    "R'",
-    'F2',
-    'D2',
-    'L2',
-    'F2',
-    'U2',
-    'F2',
-    "R'",
-    'F2',
-    'L',
-    'F2',
-    'U',
-    "L'",
-    'R',
-    'D',
-    "U'",
-    'B',
-    'U',
-    'F2',
-    'R2'
-  ];
+it('can do moves from Alg', () => {
+  const scramble = new Alg("R' F2 D2 L2 F2 U2 F2 R' F2 L F2 U L' R D U' B U F2 R2");
   expect(cube.state).toStrictEqual(EXPECTED_CUBE.default);
   cube.doMoves(scramble);
   expect(cube.state).toStrictEqual(EXPECTED_CUBE.scramble);

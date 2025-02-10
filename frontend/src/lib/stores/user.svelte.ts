@@ -104,7 +104,8 @@ async function createOne(time: Time) {
         'Content-Type': 'application/json'
       }
     },
-    sendToken: true
+    sendToken: true,
+    excludedErrors: [401]
   });
   return response.content;
 }

@@ -1,4 +1,5 @@
 import type { Color, Cube, Face, Move } from '$lib/types';
+import type { Alg } from 'cubing/alg';
 
 const defaultCube: Cube = [
   [
@@ -76,14 +77,14 @@ export class CubeInstance {
         this.state[adjacentFace].forEach((row, x) => {
           row.forEach((column, y) => {
             if (mask[i].face[x][y]) {
-              console.log(`Setting ${adjacentFace} ${x} ${y} to ${this.state[adjacentFace][x][y]}`);
+              // console.log(`Setting ${adjacentFace} ${x} ${y} to ${this.state[adjacentFace][x][y]}`);
               rows[i][x][y] = this.state[adjacentFace][x][y] as Color;
             }
           });
         });
       });
 
-      console.log(rows);
+      // console.log(rows);
       rows.forEach((row, i) => {
         if (mask[i].rotate) {
           for (let j = 0; j < mask[i].rotate; j++) {
@@ -93,15 +94,15 @@ export class CubeInstance {
       });
 
       rows.push(rows.shift()!);
-      console.log('Rows :');
-      console.log(rows);
+      // console.log('Rows :');
+      // console.log(rows);
 
       adjacentFaces.forEach((adjacentFace, i) => {
         this.state[adjacentFace].forEach((row, x) => {
           row.forEach((column, y) => {
-            console.log(adjacentFace, i, x, y);
+            // console.log(adjacentFace, i, x, y);
             if (rows[i][x][y]) {
-              console.log(rows[i][x][y]);
+              // console.log(rows[i][x][y]);
 
               this.state[adjacentFaces[i]][x][y] = rows[i][x][y] as Color;
             }
@@ -109,7 +110,7 @@ export class CubeInstance {
         });
       });
 
-      console.log(this.state);
+      // console.log(this.state);
     };
 
     switch (centerColor) {
@@ -456,16 +457,15 @@ export class CubeInstance {
     }
     return this;
   }
-  doMoves(moves: Move[] | string) {
-    if (typeof moves === 'string') {
-      moves = moves.split(' ');
-    }
-    console.log(moves);
-    moves.forEach((move) => {
+  doMoves(moves: Alg) {
+    const movesList = moves.toString().split(' ');
+    movesList.forEach((move) => {
       move = move.toUpperCase() as Move;
-      console.log(`Doing move ${move}`);
-      this.move(move);
+      // console.log(`Doing move ${move}`);
+      this.move(move as Move);
     });
+
+    return this;
   }
 
   reset() {

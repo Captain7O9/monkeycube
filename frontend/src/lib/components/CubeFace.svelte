@@ -2,8 +2,6 @@
   import type { Face } from '$lib/types';
 
   let { face }: { face: Face } = $props();
-
-  console.log(face);
 </script>
 
 <div class="face-container">

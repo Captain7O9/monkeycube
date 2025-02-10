@@ -9,13 +9,15 @@
     onLoadFunction = () => {},
     since = 0,
     maxRows = 0,
-    maxHeight = 0
+    maxHeight = 0,
+    displayError = true
   }: {
     username?: string;
     onLoadFunction?: () => void;
     since?: number;
     maxRows?: number;
     maxHeight?: number;
+    displayError?: boolean;
   } = $props();
 
   let times: Time[] = $state([]);
@@ -26,6 +28,9 @@
     error = '';
     try {
       times = await user.time.fetchMany(username, since);
+
+      // I suddenly need this (???)
+      times.reverse();
 
       if (maxHeight > 0) {
         const spliceTo = Math.floor(maxHeight / height - 0.5);
@@ -61,7 +66,7 @@
   }
 </script>
 
-{#if error}
+{#if error && displayError}
   <p style="color: red;">{error}</p>
 {/if}
 <table>
