@@ -42,14 +42,19 @@ export class CubeInstance {
   }
 
   rotate(centerColor: Color) {
+    // Stolen from stackoverflow
     const rotateFace = (face: Face): Face => {
-      return face.map((val, index) => face.map((row) => row[index]).reverse()) as Face;
+      return face.map((_val, index) => face.map((row) => row[index]).reverse()) as Face;
     };
 
     const rotateAdjacentFaces = (
+      // Array index of the faces adjacent to the center face:
+      // 0 = white, 1 = orange, 2 = green, 3 = red, 4 = blue, 5 = yellow
       adjacentFaces: number[],
+      // Mask for each face in the order of the adjacentFaces array
       mask: { rotate: number; face: boolean[][] }[]
     ) => {
+      // Setting the defaults faces to swap (false will not be swapped, Color will be swapped)
       const rows: (boolean | Color)[][][] = [
         [
           [false, false, false],
@@ -73,9 +78,10 @@ export class CubeInstance {
         ]
       ];
 
+      // For each face, if the mask is true, set the value of the current face to the adjacent face
       adjacentFaces.forEach((adjacentFace, i) => {
         this.state[adjacentFace].forEach((row, x) => {
-          row.forEach((column, y) => {
+          row.forEach((_column, y) => {
             if (mask[i].face[x][y]) {
               // console.log(`Setting ${adjacentFace} ${x} ${y} to ${this.state[adjacentFace][x][y]}`);
               rows[i][x][y] = this.state[adjacentFace][x][y] as Color;
@@ -85,7 +91,9 @@ export class CubeInstance {
       });
 
       // console.log(rows);
-      rows.forEach((row, i) => {
+
+      // For each face, if the mask has a rotation value, rotate the face
+      rows.forEach((_row, i) => {
         if (mask[i].rotate) {
           for (let j = 0; j < mask[i].rotate; j++) {
             rows[i] = rotateFace(rows[i] as Face);
@@ -93,17 +101,18 @@ export class CubeInstance {
         }
       });
 
+      // Shift the rows array to the right
       rows.push(rows.shift()!);
       // console.log('Rows :');
       // console.log(rows);
 
+      // For each face, if the mask is true, set the value of the adjacent face to the current face
       adjacentFaces.forEach((adjacentFace, i) => {
         this.state[adjacentFace].forEach((row, x) => {
-          row.forEach((column, y) => {
+          row.forEach((_column, y) => {
             // console.log(adjacentFace, i, x, y);
             if (rows[i][x][y]) {
               // console.log(rows[i][x][y]);
-
               this.state[adjacentFaces[i]][x][y] = rows[i][x][y] as Color;
             }
           });
