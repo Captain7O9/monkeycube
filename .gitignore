@@ -1,25 +1,12 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.pdb
-*.egg
-*.egg-info/
-dist/
-build/
-*.so
+node_modules
 
-# JavaScript/TypeScript
-node_modules/
-*.log
-*.tsbuildinfo
-
-# IDEs
-.vscode/
-.idea/
-*.iml
-*.http
+# Output
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
+/build
 
 # OS
 .DS_Store
@@ -28,5 +15,15 @@ Thumbs.db
 # Env
 .env
 .env.*
-!.env.template
+!.env.example
 !.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# SQLite
+*.db
+
+# IDE
+.idea
