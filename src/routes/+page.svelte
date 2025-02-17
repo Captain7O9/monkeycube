@@ -2,12 +2,12 @@
   import { onDestroy, onMount } from 'svelte';
   import { fly } from 'svelte/transition';
   import { formatTime } from '$lib/utils';
-  import { TimesTableWidget } from '$lib/components';
+  import { TimesTableWidget, RightPanel } from '$lib/components';
   import { Alg } from 'cubing/alg';
   import { randomScrambleForEvent } from 'cubing/scramble';
-  import { Cube } from '$lib/components';
   import type { PageProps } from './$types';
   import session from '$lib/stores/session.svelte.js';
+  import { QUERIES } from '$lib/queries';
 
   let { data }: PageProps = $props();
 
@@ -21,6 +21,13 @@
   let seconds = $derived(formatTime(time).seconds);
   let decimals = $derived(formatTime(time).decimals);
 
+  let currentTime = $state({
+    id: 0,
+    time: 0,
+    isPlusTwo: false,
+    isDNF: false
+  });
+
   let isRunning = $state(false);
 
   let startTime = 0;
@@ -31,16 +38,11 @@
   let interval: ReturnType<typeof setInterval>;
   let progressInterval: ReturnType<typeof setInterval>;
 
-  let plusTwoToggle = $state(false);
-  let dnfToggle = $state(false);
-
-  let currentTimeId = $state('');
-
   let table = $state<TimesTableWidget>();
   let tablePanelHeight = $state(0);
 
   let scramble: string = $state('');
-  const scrambleRegex = new RegExp(/(U'|U2|U)|(R'|R2|R)|(F'|F2|F)|(D'|D2|D)|(L'|L2|L)|(B'|B2|B)/g);
+  const SCRAMBLE_REGEX = new RegExp(/(U'|U2|U)|(R'|R2|R)|(F'|F2|F)|(D'|D2|D)|(L'|L2|L)|(B'|B2|B)/g);
 
   function startTimer() {
     isRunning = true;
@@ -58,21 +60,11 @@
 
     if (!user) return;
 
-    await fetch(`/api/times`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        time: time,
-        scramble: scramble,
-        event: '333'
-      })
-    });
+    await QUERIES.postTime(time, scramble, '333');
     await table?.loadTimes();
   }
 
-  function onKeyDown(event: KeyboardEvent) {
+  function onWindowKeyDown(event: KeyboardEvent) {
     if (event.code === 'Space') {
       (document.activeElement as HTMLElement)?.blur();
       if (keyDownStartTime === 0) {
@@ -85,7 +77,7 @@
     }
   }
 
-  function onKeyUp(event: KeyboardEvent) {
+  function onWindowKeyUp(event: KeyboardEvent) {
     if (event.code === 'Space') {
       if (!isRunning && canStart) {
         startTimer();
@@ -94,51 +86,29 @@
     }
   }
 
-  async function loadTime() {
-    try {
-      const response = await fetch(`/api/times?limit=1&since=${session.start}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error("Couldn't fetch last time");
-      }
-
-      const [lastTime] = await response.json();
-
-      currentTimeId = lastTime?.id ?? '';
-      plusTwoToggle = lastTime?.isPlusTwo ?? false;
-      dnfToggle = lastTime?.isDNF ?? false;
-      time = lastTime?.time ?? 0;
-    } catch (error) {
-      console.error(error);
+  function onScrambleKeyDown(event: KeyboardEvent) {
+    if (['Enter', 'Escape'].includes(event.code)) {
+      (event.target as HTMLElement).blur();
     }
+  }
+
+  function setCurrent() {
+    const times = session.times.get();
+    const { id = 0, time = 0, isPlusTwo = false, isDNF = false } = times[0] || {};
+    Object.assign(currentTime, { id, time, isPlusTwo, isDNF });
   }
 
   async function handleToggle(option: 'isDNF' | 'isPlusTwo', currentStatus: boolean = false) {
-    console.log('Body', { [option]: !currentStatus });
-    console.log(currentTimeId);
-
-    await fetch(`/api/times/${currentTimeId}`, {
-      method: 'PATCH',
-      headers: {
-        'Application-Type': 'application/json'
-      },
-      body: JSON.stringify({ [option]: !currentStatus })
-    });
+    await QUERIES.patchTime(currentTime.id, { [option]: !currentStatus });
     await table?.loadTimes();
   }
 
-  async function deleteTime() {
-    if (!currentTimeId) {
+  async function onTimeDelete() {
+    if (!currentTime.id) {
       return;
     }
-    await fetch(`/api/times/${currentTimeId}`, {
-      method: 'DELETE'
-    });
+
+    await QUERIES.deleteTime(currentTime.id);
     await table?.loadTimes();
   }
 
@@ -149,7 +119,7 @@
 
   function uppercase(node: HTMLDivElement) {
     const transform = () => {
-      const matched = node.innerText.toUpperCase().match(scrambleRegex);
+      const matched = node.innerText.toUpperCase().match(SCRAMBLE_REGEX);
       matched?.forEach((match) => {
         node.innerText = node.innerText.replace(match, match.toUpperCase());
       });
@@ -167,8 +137,6 @@
 
   onMount(async () => {
     (document.activeElement as HTMLElement)?.blur();
-    document.addEventListener('keyup', onKeyUp);
-    document.addEventListener('keydown', onKeyDown);
 
     await table?.loadTimes();
 
@@ -179,40 +147,39 @@
 
     await getNewScramble('333');
   });
+
   onDestroy(() => {
     clearInterval(progressInterval);
   });
 </script>
 
+<svelte:window onkeydown={onWindowKeyDown} onkeyup={onWindowKeyUp} />
 <main>
   {#if !(canStart || isRunning)}
     <div class="times-table" bind:clientHeight={tablePanelHeight} transition:fly={{ x: '-100%' }}>
       <TimesTableWidget
         bind:this={table}
-        username={user?.username}
-        onLoadFunction={loadTime}
-        since={session.start}
+        onLoadFunction={setCurrent}
         maxHeight={tablePanelHeight}
-        displayError={false}
       />
-      <a href="/user">show all</a>
+      <a href="/profile">show all</a>
     </div>
 
     <div class="timer-settings" transition:fly={{ y: '-500%' }}>
       <button
         class="plus-two"
         onclick={() => {
-          handleToggle('isPlusTwo', plusTwoToggle);
+          handleToggle('isPlusTwo', currentTime.isPlusTwo);
         }}
-        class:toggled={plusTwoToggle}
+        class:toggled={currentTime.isPlusTwo}
         ><i class="fa-solid fa-clock"></i>+2
       </button>
       <button
         class="dnf"
         onclick={() => {
-          handleToggle('isDNF', dnfToggle);
+          handleToggle('isDNF', currentTime.isDNF);
         }}
-        class:toggled={dnfToggle}
+        class:toggled={currentTime.isDNF}
         ><i class="fa-solid fa-flag"></i>dnf
       </button>
       <div class="separator"></div>
@@ -225,16 +192,13 @@
         <i class="fa-solid fa-arrow-rotate-back"></i>scramble
       </button>
       <div class="separator"></div>
-      <button class="delete" onclick={deleteTime}
+      <button class="delete" onclick={onTimeDelete}
         ><i class="fa-solid fa-trash-can"></i>delete
       </button>
     </div>
 
     <div class="right-panel-container" transition:fly={{ x: '100%' }}>
-      <div class="a"></div>
-      <div class="scramble-display-timer">
-        <Cube scramble={new Alg(scramble)} />
-      </div>
+      <RightPanel scramble={new Alg(scramble)} />
     </div>
   {:else}
     <!--Workaround to transition:fly making the element disappear from the DOM-->
@@ -258,6 +222,7 @@
   </div>
 
   <div class="scramble" class:hidden={canStart || isRunning}>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       contenteditable="true"
       bind:innerText={scramble}
@@ -268,6 +233,7 @@
           await getNewScramble('333');
         }
       }}
+      onkeydown={onScrambleKeyDown}
     ></div>
   </div>
 </main>
@@ -341,6 +307,14 @@
 
         &:hover {
           color: var(--text-color);
+        }
+      }
+
+      .toggled {
+        color: var(--main-color);
+
+        &:hover {
+          color: var(--main-color);
         }
       }
 
@@ -437,17 +411,5 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-
-    .a {
-      @include panel;
-      flex-grow: 1;
-    }
-
-    .scramble-display-timer {
-      @include panel;
-      display: flex;
-      justify-content: center;
-      padding: 10px;
-    }
   }
 </style>

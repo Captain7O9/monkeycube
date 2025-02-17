@@ -426,7 +426,6 @@ const EXPECTED_CUBE = {
 const cube = new CubeInstance();
 beforeEach(() => {
   cube.reset();
-  console.log('Cube reset');
 });
 
 it('is created with default state', () => {

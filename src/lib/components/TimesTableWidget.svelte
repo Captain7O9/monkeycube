@@ -1,58 +1,29 @@
 <script lang="ts">
   import type { Time } from '$lib/server/db/schema';
   import { formatTimeToString } from '$lib/utils';
-  import { ToolTip } from '$lib/components/index';
+  import { ToolTip, TimesOptionsModal } from '$lib/components/';
+  import { QUERIES } from '$lib/queries';
+  import session from '$lib/stores/session.svelte';
 
   let {
     onLoadFunction = () => {},
-    since = 0,
-    maxRows = 0,
-    maxHeight = 0,
-    displayError = true
+    maxHeight = 0
   }: {
-    username?: string;
     onLoadFunction?: () => void;
-    since?: number;
-    maxRows?: number;
-    maxHeight?: number;
-    displayError?: boolean;
+    maxHeight: number;
   } = $props();
 
   let times: Time[] = $state([]);
-  let error: string = $state('');
   let height = $state(53);
+  let modalId = $state(0);
 
   export async function loadTimes() {
-    error = '';
-    try {
-      if (maxHeight > 0) {
-        console.info(`Max height is ${maxHeight}`);
-        console.info(`Height is ${height}`);
-        const limit = Math.floor(maxHeight / height - 0.5);
-        console.info(`Limit to ${limit} rows`);
+    const limit = Math.floor(maxHeight / height - 0.5);
+    console.info(`Limit to ${limit} rows`);
 
-        const response = await fetch(`api/times?limit=${limit}&since=${since}`, {
-          method: 'GET'
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch times');
-        }
-
-        times = await response.json();
-      } else if (maxRows > 0) {
-        const response = await fetch(`api/times?limit=${maxRows}&since=${since}`, {
-          method: 'GET'
-        });
-
-        times = await response.json();
-      }
-      onLoadFunction();
-      // eslint-disable-next-line
-    } catch (err: any) {
-      error = err.message;
-      times = [];
-    }
+    times = await QUERIES.getTimes(limit, session.start);
+    session.times.set(times);
+    onLoadFunction();
   }
 
   async function handleToggle(
@@ -60,32 +31,26 @@
     option: 'isDNF' | 'isPlusTwo',
     currentStatus: boolean = false
   ) {
-    await fetch(`/api/times/${timeId}`, {
-      method: 'PATCH',
-      headers: {
-        'Application-Type': 'application/json'
-      },
-      body: JSON.stringify({ [option]: !currentStatus })
-    });
+    await QUERIES.patchTime(timeId, { [option]: !currentStatus });
     await loadTimes();
   }
 
-  async function handleDelete(time: Time) {
-    await fetch(`/api/times/${time.id}`, {
-      method: 'DELETE'
-    });
+  async function handleDelete(timeId: number) {
+    await QUERIES.deleteTime(timeId);
     await loadTimes();
+  }
+
+  function handleClose() {
+    modalId = 0;
   }
 </script>
 
-{#if error && displayError}
-  <p style="color: red;">{error}</p>
-{/if}
 <table>
   <thead>
     <tr>
-      <th class="time">time</th>
-      <th class="date">date</th>
+      <th>time</th>
+      <th>ao5</th>
+      <th>ao12</th>
       <th class="options">options</th>
     </tr>
   </thead>
@@ -93,7 +58,9 @@
     {#each times as time}
       <tr bind:clientHeight={height}>
         <td class="time">{formatTimeToString(time.time)}</td>
-        <td class="date">{new Date(time.date ?? 0).toLocaleDateString()}</td>
+        <td class="time">{formatTimeToString(time.time)}</td>
+        <td class="time">{formatTimeToString(time.time)}</td>
+        <!--        <td class="date">{new Date(time.date ?? 0).toLocaleDateString()}</td>-->
         <td class="options">
           <button
             onclick={() => {
@@ -101,7 +68,6 @@
             }}
             class:toggled={time.isPlusTwo}
             aria-label="+2"
-            class="setting"
           >
             <ToolTip content="+2">
               <i class="fa-solid fa-clock"></i></ToolTip
@@ -113,57 +79,54 @@
             }}
             class:toggled={time.isDNF}
             aria-label="dnf"
-            class="setting"
           >
             <ToolTip content="dnf">
               <i class="fa-solid fa-flag"></i>
             </ToolTip>
           </button>
           <button
-            onclick={async () => {
-              await handleDelete(time);
+            aria-label="Info"
+            onclick={() => {
+              modalId = time.id;
             }}
-            aria-label="Delete"
-            class="delete-button"
           >
-            <ToolTip content="delete">
-              <i class="fa-solid fa-trash-can"></i></ToolTip
+            <ToolTip content="info">
+              <i class="fa-solid fa-info-circle"></i></ToolTip
             ></button
           >
         </td>
       </tr>
     {:else}
       <tr bind:clientHeight={height}>
-        <td>-</td>
-        <td>-</td>
-        <td>-</td>
+        <td class="placeholder">-</td>
+        <td class="placeholder">-</td>
+        <td class="placeholder">-</td>
+        <td class="placeholder">-</td>
       </tr>
     {/each}
   </tbody>
 </table>
 
-<style lang="scss">
-  .toggled {
-    color: var(--main-color);
-  }
+{#if modalId > 0}
+  <TimesOptionsModal time={session.times.get()[0]} {handleToggle} {handleDelete} {handleClose} />
+{/if}
 
+<style lang="scss">
   table {
-    width: 100%;
     text-align: left;
     border-collapse: collapse;
-    table-layout: fixed;
 
     th {
       font-weight: normal;
     }
 
     td {
-      padding: 1rem;
+      padding: 1rem 0.4rem;
     }
 
     thead th {
       font-size: 0.75rem;
-      padding: 0.3rem 1rem;
+      padding: 0.3rem 0.4rem;
       position: sticky;
       top: 0;
       background-color: var(--background-color);
@@ -190,16 +153,31 @@
     }
 
     .options {
+      width: 0.1%;
+      padding-right: 1rem;
+      justify-content: space-evenly;
+      white-space: nowrap;
       color: var(--sub-color);
-      width: 65px;
+
+      .toggled {
+        color: var(--main-color);
+
+        &:hover {
+          color: var(--main-color);
+        }
+      }
+
+      button:hover {
+        color: var(--text-color);
+      }
     }
 
-    .delete-button:hover {
-      color: var(--error-color);
+    .time {
+      color: var(--sub-color);
     }
 
-    .setting:hover {
-      color: var(--text-color);
+    .placeholder {
+      color: var(--sub-color);
     }
   }
 </style>

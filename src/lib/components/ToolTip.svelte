@@ -13,8 +13,8 @@
       left: 50%;
       transform: translateX(-50%);
       bottom: 2em;
-      color: var(--text-color);
-      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 2px 4px;
       border-radius: 3px;
       display: none;
