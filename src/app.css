@@ -2,75 +2,75 @@
 
 
 :root {
-  --background-color: #323437;
-  --main-color: #e2b714;
-  --sub-color: #646669;
-  --sub-alt-color: #2c2e31;
-  --text-color: #d1d0c5;
-  --error-color: #ca4754;
-  --border-radius: 8px;
-  --white: #fff;
-  --yellow: #f7c331;
-  --green: #2ecc71;
-  --blue: #3498db;
-  --red: #e74c3c;
-  --orange: #f39c12;
+	--background-color: #323437;
+	--main-color: #e2b714;
+	--sub-color: #646669;
+	--sub-alt-color: #2c2e31;
+	--text-color: #d1d0c5;
+	--error-color: #ca4754;
+	--border-radius: 8px;
+	--white: #fff;
+	--yellow: #f7c331;
+	--green: #2ecc71;
+	--blue: #3498db;
+	--red: #e74c3c;
+	--orange: #f39c12;
 
 }
 
 *::selection {
-  background-color: var(--main-color);
-  color: var(--background-color);
+	background-color: var(--main-color);
+	color: var(--background-color);
 }
 
 body {
-  font-family: "Roboto Mono", monospace;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+	font-family: "Roboto Mono", monospace;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
 }
 
 .lexend-deca {
-  font-family: "Lexend Deca", serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
+	font-family: "Lexend Deca", serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
 }
 
 html, body {
-  scroll-behavior: smooth;
-  margin: 0;
-  padding: 0;
-  background-color: var(--background-color);
-  color: var(--sub-color);
+	scroll-behavior: smooth;
+	margin: 0;
+	padding: 0;
+	background-color: var(--background-color);
+	color: var(--sub-color);
 }
 
 a {
-  color: inherit;
-  text-decoration: inherit;
+	color: inherit;
+	text-decoration: inherit;
 }
 
 button {
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 a, button {
-  transition: background-color 100ms, color 100ms;
+	transition: background-color 100ms, color 100ms;
 }
 
 
 .hidden {
-  opacity: 0;
+	opacity: 0;
 }
 
 .constrain-width {
-  max-width: clamp(500px, 90vw, 1400px);
-  width: 100%;
-  margin: 0 auto;
+	max-width: clamp(500px, 90vw, 1400px);
+	width: 100%;
+	margin: 0 auto;
 }
