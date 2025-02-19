@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Time } from '$lib/server/db/schema';
 	import { formatTimeToString } from '$lib/utils';
-	import { ToolTip } from '$lib/components/index';
+	import { ToolTip } from '$lib/components';
+	import { MUTATIONS, QUERIES } from '$lib/queries';
 
 	let {
 		times
@@ -11,27 +12,6 @@
 
 	let limit = $state(10);
 	let displayedTimes = $derived(times.slice(0, limit));
-
-	// TODO: Handle refreshing the times table
-	async function handleToggle(
-		timeId: number,
-		option: 'isDNF' | 'isPlusTwo',
-		currentStatus: boolean = false
-	) {
-		await fetch(`/api/times/${timeId}`, {
-			method: 'PATCH',
-			headers: {
-				'Application-Type': 'application/json'
-			},
-			body: JSON.stringify({ [option]: !currentStatus })
-		});
-	}
-
-	async function handleDelete(time: Time) {
-		await fetch(`/api/times/${time.id}`, {
-			method: 'DELETE'
-		});
-	}
 </script>
 
 <div class="times-table">
@@ -53,7 +33,8 @@
 					<td class="options">
 						<button
 							onclick={() => {
-								handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+								MUTATIONS.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+								QUERIES.getTime(time.id);
 							}}
 							class:toggled={time.isPlusTwo}
 							aria-label="+2"
@@ -65,7 +46,8 @@
 						>
 						<button
 							onclick={() => {
-								handleToggle(time.id, 'isDNF', time.isDNF);
+								MUTATIONS.handleToggle(time.id, 'isDNF', time.isDNF);
+								QUERIES.getTime(time.id);
 							}}
 							class:toggled={time.isDNF}
 							aria-label="dnf"
@@ -76,8 +58,9 @@
 							</ToolTip>
 						</button>
 						<button
-							onclick={async () => {
-								await handleDelete(time);
+							onclick={() => {
+								MUTATIONS.handleDelete(time.id);
+								QUERIES.getTime(time.id);
 							}}
 							aria-label="Delete"
 							class="delete-button"

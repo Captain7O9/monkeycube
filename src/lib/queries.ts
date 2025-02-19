@@ -1,5 +1,5 @@
 import type { Time } from '$lib/server/db/schema';
-import session from '$lib/stores/session.svelte';
+import { localTimes } from '$lib/stores';
 
 export const QUERIES = {
 	getTimes: async function ({
@@ -21,11 +21,40 @@ export const QUERIES = {
 			}
 
 			const newTimes = await response.json();
-			if (save) session.times.set(newTimes);
+			if (save) localTimes.times = newTimes;
 			return newTimes;
 		} catch (error) {
 			console.error('Error fetching times:', error);
 			return [];
+		}
+	},
+	getTime: async function (timeId: number, save: boolean = true) {
+		try {
+			const response = await fetch(`/api/times/${timeId}`, {
+				method: 'GET'
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to fetch time');
+			}
+
+			const newTime = await response.json();
+
+			if (save) {
+				console.log('Saving time');
+
+				const targetTimeIndex = localTimes.times.findIndex((time) => time.id);
+
+				if (targetTimeIndex === -1) {
+					localTimes.times.push(newTime);
+				} else {
+					localTimes.times[targetTimeIndex] = newTime;
+				}
+			}
+
+			return newTime;
+		} catch (error) {
+			console.error(`Error fetching time ${timeId}:`, error);
 		}
 	}
 };

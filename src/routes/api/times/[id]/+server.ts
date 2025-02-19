@@ -5,6 +5,19 @@ import * as table from '$lib/server/db/schema';
 import { error, json } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
 
+export const GET: RequestHandler = async ({ params }) => {
+	const [result] = await db
+		.select()
+		.from(table.time)
+		.where(eq(table.time.id, Number(params.id)));
+
+	if (!result) {
+		error(404, 'Time not found');
+	}
+
+	return json(result);
+};
+
 export const PATCH: RequestHandler = async ({ locals, params, request }) => {
 	if (!locals.user) {
 		error(401, 'Unauthorized');
@@ -44,19 +57,6 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 
 	const result = await db.delete(table.time).where(eq(table.time.id, Number(params.id)));
 	if (result.rowsAffected === 0) {
-		error(404, 'Time not found');
-	}
-
-	return json(result);
-};
-
-export const GET: RequestHandler = async ({ params }) => {
-	const [result] = await db
-		.select()
-		.from(table.time)
-		.where(eq(table.time.id, Number(params.id)));
-
-	if (!result) {
 		error(404, 'Time not found');
 	}
 

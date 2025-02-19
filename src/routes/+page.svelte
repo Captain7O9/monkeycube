@@ -5,29 +5,24 @@
 	import { TimesTableWidget, RightPanel } from '$lib/components';
 	import { Alg } from 'cubing/alg';
 	import type { PageProps } from './$types';
-	import session from '$lib/stores/session.svelte.js';
 	import { MUTATIONS } from '$lib/queries';
 	import TimerSettings from './TimerSettings.svelte';
 	import ScrambleField from './ScrambleField.svelte';
+	import { localTimes } from '$lib/stores';
+
+	const WAIT_TIME = 200;
 
 	let { data }: PageProps = $props();
 
 	const user = data.user;
 	console.log('Logging user from +page.svelte', user);
 
-	const WAIT_TIME = 200;
-
 	let time = $state(0); // Time in milliseconds
 	let minutes = $derived(formatTime(time).minutes);
 	let seconds = $derived(formatTime(time).seconds);
 	let decimals = $derived(formatTime(time).decimals);
 
-	let currentTime = $state({
-		id: 0,
-		time: 0,
-		isPlusTwo: false,
-		isDNF: false
-	});
+	let lastTime = $derived(localTimes.last.time);
 
 	let table = $state<TimesTableWidget>();
 	let scramble = $state<ScrambleField>();
@@ -50,20 +45,6 @@
 		currentScramble = newScramble;
 	}
 
-	function setCurrent() {
-		const times = session.times.get();
-
-		currentTime = {
-			id: times[0]?.id ?? 0,
-			time: times[0]?.time ?? 0,
-			isPlusTwo: times[0]?.isPlusTwo ?? false,
-			isDNF: times[0]?.isDNF ?? false
-		};
-		console.log('Current time', currentTime);
-
-		time = currentTime.time;
-	}
-
 	function startTimer() {
 		isRunning = true;
 		startTime = Date.now();
@@ -74,15 +55,17 @@
 	}
 
 	async function stopTimer() {
-		isRunning = false;
 		clearInterval(interval);
 		const previousScramble = currentScramble.toString();
 		await scramble?.setNewScramble('333');
 
-		if (!user) return;
-
+		if (!user) {
+			isRunning = false;
+			return;
+		}
 		await MUTATIONS.postTime(time, previousScramble, '333');
-		await table?.loadTimes();
+		await localTimes.sync();
+		isRunning = false;
 	}
 
 	function onWindowKeyDown(event: KeyboardEvent) {
@@ -107,11 +90,15 @@
 		}
 	}
 
+	$effect(() => {
+		if (!isRunning && lastTime !== time) time = localTimes.last.time;
+	});
+
 	onMount(async () => {
 		// Remove focus on scramble
 		(document.activeElement as HTMLElement)?.blur();
 
-		await table?.loadTimes();
+		await localTimes.sync();
 
 		progressInterval = setInterval(() => {
 			progressValue = keyDownStartTime === 0 ? 0 : Date.now() - keyDownStartTime;
@@ -126,20 +113,13 @@
 <svelte:window onkeydown={onWindowKeyDown} onkeyup={onWindowKeyUp} />
 <main>
 	{#if !(canStart || isRunning)}
-		<div
-			class="times-table"
-			bind:clientHeight={tablePanelHeight}
-			transition:fly={{ x: '-100%', duration: 400 }}
-		>
-			<TimesTableWidget
-				bind:this={table}
-				onLoadFunction={setCurrent}
-				maxHeight={tablePanelHeight}
-			/>
+		<div class="times-table" transition:fly={{ x: '-100%', duration: 400 }}>
+			<!--				onLoadFunction={setCurrent}-->
+			<TimesTableWidget bind:this={table} maxHeight={tablePanelHeight} />
 			<a href="/profile">show all</a>
 		</div>
 
-		<TimerSettings {currentTime} setScramble={scramble?.setNewScramble} after={table?.loadTimes} />
+		<TimerSettings setScramble={scramble?.setNewScramble} />
 
 		<div class="right-panel-container" transition:fly={{ x: '100%' }}>
 			<RightPanel scramble={currentScramble} />
@@ -164,6 +144,9 @@
 	<div class="scramble" class:hidden={canStart || isRunning}>
 		<ScrambleField bind:this={scramble} autoGenerate={true} {onNewScramble} />
 	</div>
+
+	<!--	Get height of time table before it appears to get max height before overflow-->
+	<div bind:clientHeight={tablePanelHeight} class="times-table hidden"></div>
 </main>
 
 <style lang="scss">

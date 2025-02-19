@@ -2,8 +2,8 @@
 	import type { Time } from '$lib/server/db/schema';
 	import { formatTimeToString } from '$lib/utils';
 	import { ToolTip, TimesOptionsModal } from '$lib/components/';
-	import { MUTATIONS, QUERIES } from '$lib/queries';
-	import session from '$lib/stores/session.svelte';
+	import { MUTATIONS } from '$lib/queries';
+	import { localTimes } from '$lib/stores';
 
 	let {
 		onLoadFunction = () => {},
@@ -13,16 +13,13 @@
 		maxHeight: number;
 	} = $props();
 
-	let times: Time[] = $state([]);
 	let height = $state(53);
+	let limit = $derived(Math.floor(maxHeight / height));
+	let times: Time[] = $derived(localTimes.sinceSessionStart.splice(0, limit - 1));
 	let modalId = $state(0);
 
 	export async function loadTimes() {
-		const limit = Math.floor(maxHeight / height - 0.5);
-		console.info(`Limit to ${limit} rows`);
-
-		times = await QUERIES.getTimes({ limit, since: session.start });
-		session.times.set(times);
+		await localTimes.sync();
 		onLoadFunction();
 	}
 
@@ -51,6 +48,7 @@
 					<button
 						onclick={() => {
 							MUTATIONS.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo, loadTimes);
+							localTimes.sync();
 						}}
 						class:toggled={time.isPlusTwo}
 						aria-label="+2"
@@ -62,6 +60,7 @@
 					<button
 						onclick={() => {
 							MUTATIONS.handleToggle(time.id, 'isDNF', time.isDNF, loadTimes);
+							localTimes.sync();
 						}}
 						class:toggled={time.isDNF}
 						aria-label="dnf"
@@ -94,7 +93,7 @@
 </table>
 
 {#if modalId > 0}
-	<TimesOptionsModal time={session.times.get()[0]} {handleClose} />
+	<TimesOptionsModal timeId={modalId} {handleClose} />
 {/if}
 
 <style lang="scss">

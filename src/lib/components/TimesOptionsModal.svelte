@@ -1,16 +1,18 @@
 <script lang="ts">
 	import Modal from '$lib/components/Modal.svelte';
-	import type { Time } from '$lib/server/db/schema';
 	import { MUTATIONS } from '$lib/queries';
 	import { formatTimeToString } from '$lib/utils.js';
+	import { localTimes } from '$lib/stores';
 
 	let {
-		time,
+		timeId,
 		handleClose
 	}: {
-		time: Time;
+		timeId: number;
 		handleClose: () => void;
 	} = $props();
+
+	let time = $derived(localTimes.time(timeId));
 
 	function handleKeyDown(event: KeyboardEvent) {
 		if (event.code === 'Escape') {
@@ -44,6 +46,7 @@
 				class="plus-two"
 				onclick={() => {
 					MUTATIONS.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+					localTimes.sync();
 				}}
 				class:toggled={time.isPlusTwo}
 				><i class="fa-solid fa-clock"></i>+2
@@ -52,6 +55,7 @@
 				class="dnf"
 				onclick={() => {
 					MUTATIONS.handleToggle(time.id, 'isDNF', time.isDNF);
+					localTimes.sync();
 				}}
 				class:toggled={time.isDNF}
 				><i class="fa-solid fa-flag"></i>dnf
@@ -60,6 +64,7 @@
 				class="delete"
 				onclick={() => {
 					MUTATIONS.handleDelete(time.id);
+					localTimes.sync();
 					handleClose();
 				}}
 				><i class="fa-solid fa-trash-can"></i>delete

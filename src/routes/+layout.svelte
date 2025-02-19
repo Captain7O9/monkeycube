@@ -6,6 +6,7 @@
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
 	import { setSearchDebug } from 'cubing/search';
+	import { session } from '$lib/stores';
 
 	let { children, data }: LayoutProps = $props();
 
@@ -15,6 +16,7 @@
 
 	onMount(() => {
 		styles.load();
+		session.startNew();
 	});
 </script>
 

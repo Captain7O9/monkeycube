@@ -20,7 +20,7 @@
 		<button formaction="?/register">Register</button>
 		<button formaction="?/logout">Logout</button>
 	</form>
-	<p style="color: red">{form?.message ?? ''}</p>
+	<p style:color="red">{form?.message ?? ''}</p>
 
 	{#if data.user}
 		You are logged in as {data.user.username}

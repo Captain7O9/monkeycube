@@ -1,10 +1,12 @@
 <script lang="ts">
 	import TimesTable from '$lib/components/TimesTable.svelte';
+	import type { Time } from '$lib/server/db/schema';
 	import Chart from 'chart.js/auto';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
 	import { styles } from '$lib/stores/style.svelte';
+	import { QUERIES } from '$lib/queries';
 
 	let { data }: PageProps = $props();
 
@@ -13,7 +15,7 @@
 
 	let table = $state<TimesTable>();
 
-	let times = $state(data.times);
+	let times: Time[] = $state([]);
 	let labels = $derived(
 		times.map(
 			(time) =>
@@ -21,8 +23,6 @@
 		)
 	);
 	let chartData = $derived(times.map((time) => time.time));
-
-	console.log(times);
 
 	let chart: Chart;
 	let chartCanvas = $state<HTMLCanvasElement>();
@@ -32,6 +32,9 @@
 	});
 
 	onMount(async () => {
+		times = await QUERIES.getTimes({ limit: 2 ** 10, since: 0 });
+		console.log(times);
+
 		const ctx = chartCanvas?.getContext('2d');
 		chart = new Chart(ctx ?? '', {
 			type: 'line',
@@ -67,7 +70,7 @@
 	<div id="time-chart">
 		<canvas bind:this={chartCanvas}></canvas>
 	</div>
-	<TimesTable bind:this={table} times={data.times} />
+	<TimesTable bind:this={table} {times} />
 </main>
 
 <style>
