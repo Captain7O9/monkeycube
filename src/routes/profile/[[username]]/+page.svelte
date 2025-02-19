@@ -48,6 +48,7 @@
 				]
 			}
 		});
+		console.log(chart);
 	});
 </script>
 

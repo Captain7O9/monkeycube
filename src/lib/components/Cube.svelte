@@ -1,17 +1,22 @@
 <script lang="ts">
-	import CubeFace from './CubeFace.svelte';
 	import { CubeInstance } from '$lib/cube';
 	import type { Alg } from 'cubing/alg';
+	import type { Face } from '$lib/types';
 
 	let { scramble }: { scramble: Alg } = $props();
 	let cube = $state(new CubeInstance());
-	let cubeState = $state(cube.state);
-
-	$effect(() => {
-		cube.reset();
-		cubeState = cube.doMoves(scramble).state;
-	});
+	let cubeState = $derived(cube.reset().doMoves(scramble).state);
 </script>
+
+{#snippet CubeFace(face: Face)}
+	<div class="face-container">
+		{#each face as row}
+			{#each row as column}
+				<div style:background-color="var(--{column})"></div>
+			{/each}
+		{/each}
+	</div>
+{/snippet}
 
 <div class="cube">
 	<div class="cube-container">
@@ -23,7 +28,7 @@
 				<div></div>
 			{/if}
 
-			<CubeFace {face} />
+			{@render CubeFace(face)}
 		{/each}
 	</div>
 </div>
@@ -42,5 +47,19 @@
 		grid-template-rows: 1fr 1fr 1fr;
 		gap: 5px;
 		width: min-content;
+	}
+
+	.face-container {
+		width: min-content;
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 1fr 1fr 1fr;
+		gap: 4px;
+
+		div {
+			width: 1.5rem;
+			height: 1.5rem;
+			border-radius: calc(var(--border-radius) / 5);
+		}
 	}
 </style>
