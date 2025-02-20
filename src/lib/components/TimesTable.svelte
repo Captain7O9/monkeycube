@@ -4,11 +4,7 @@
 	import { ToolTip } from '$lib/components';
 	import { MUTATIONS, QUERIES } from '$lib/queries';
 
-	let {
-		times
-	}: {
-		times: Time[];
-	} = $props();
+	let { times }: { times: Time[] } = $props();
 
 	let limit = $state(10);
 	let displayedTimes = $derived(times.slice(0, limit));

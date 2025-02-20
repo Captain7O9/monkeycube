@@ -36,16 +36,12 @@ export const PATCH: RequestHandler = async ({ locals, params, request }) => {
 		error(403, 'You do not have permission to edit this time');
 	}
 
-	console.log(timeRequested);
-
 	const updateData: Partial<Time> = await request.json();
 
-	console.log(updateData);
 	const patchedTime = await db
 		.update(table.time)
 		.set(updateData)
 		.where(eq(table.time.id, Number(params.id)));
-	console.log(patchedTime);
 
 	return json(patchedTime);
 };

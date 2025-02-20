@@ -22,7 +22,7 @@
 	let seconds = $derived(formatTime(time).seconds);
 	let decimals = $derived(formatTime(time).decimals);
 
-	let lastTime = $derived(localTimes.last.time);
+	let lastTime = $derived(localTimes.last?.time);
 
 	let table = $state<TimesTableWidget>();
 	let scramble = $state<ScrambleField>();
@@ -91,7 +91,7 @@
 	}
 
 	$effect(() => {
-		if (!isRunning && lastTime !== time) time = localTimes.last.time;
+		if (!isRunning && lastTime && lastTime !== time) time = lastTime;
 	});
 
 	onMount(async () => {
@@ -114,7 +114,6 @@
 <main>
 	{#if !(canStart || isRunning)}
 		<div class="times-table" transition:fly={{ x: '-100%', duration: 400 }}>
-			<!--				onLoadFunction={setCurrent}-->
 			<TimesTableWidget bind:this={table} maxHeight={tablePanelHeight} />
 			<a href="/profile">show all</a>
 		</div>
