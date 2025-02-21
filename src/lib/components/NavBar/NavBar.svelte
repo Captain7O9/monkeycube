@@ -7,6 +7,7 @@
 <div class="navbar-content constrain-width">
 	<a href="/" class="logo lexend-deca"><Logo /></a>
 
+	<a href="/" aria-label="home"><i class="fa-solid fa-clock"></i></a>
 	<a href="/profile" aria-label="times"><i class="fa-solid fa-chart-simple"></i></a>
 	<a href="/" aria-label="algorithms"><i class="fa-solid fa-list-ul"></i></a>
 	<a href="/settings" aria-label="settings"><i class="fa-solid fa-cog"></i></a>

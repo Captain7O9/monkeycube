@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { themes } from '$lib/stores';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Theme } from '$lib/types';
 	type ThemeCardProps = [string, Theme];
 
@@ -24,7 +24,6 @@
 	onMount(() => {
 		customTheme = themes.custom;
 	});
-	onDestroy(themes.apply);
 </script>
 
 {#snippet themeCard(theme: ThemeCardProps)}
@@ -61,7 +60,7 @@
 				<button
 					class:selected={themes.name !== 'custom'}
 					onclick={() => {
-						themes.set({ name: 'serika dark' });
+						if (themes.name === 'custom') themes.set({ name: 'serika dark' });
 					}}>presets</button
 				><button
 					class:selected={themes.name === 'custom'}
