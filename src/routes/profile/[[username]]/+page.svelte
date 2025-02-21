@@ -5,8 +5,8 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import type { PageProps } from './$types';
-	import { styles } from '$lib/stores/style.svelte';
 	import { QUERIES } from '$lib/queries';
+	import { themes } from '$lib/stores';
 
 	let { data }: PageProps = $props();
 
@@ -43,8 +43,8 @@
 				datasets: [
 					{
 						label: 'Times',
-						backgroundColor: styles.current['--main-color'],
-						borderColor: styles.current['--main-color'],
+						backgroundColor: themes.currentTheme.values['--main-color'],
+						borderColor: themes.currentTheme.values['--main-color'],
 						data: chartData.reverse(),
 						cubicInterpolationMode: 'monotone'
 					}

@@ -18,7 +18,7 @@
 	<button
 		class="plus-two"
 		onclick={() => {
-			MUTATIONS.handleToggle(currentTime.id, 'isPlusTwo', currentTime.isPlusTwo, after);
+			MUTATIONS.time.handleToggle(currentTime.id, 'isPlusTwo', currentTime.isPlusTwo, after);
 		}}
 		class:toggled={currentTime?.isPlusTwo}
 		><i class="fa-solid fa-clock"></i>+2
@@ -26,7 +26,7 @@
 	<button
 		class="dnf"
 		onclick={() => {
-			MUTATIONS.handleToggle(currentTime.id, 'isDNF', currentTime.isDNF, after);
+			MUTATIONS.time.handleToggle(currentTime.id, 'isDNF', currentTime.isDNF, after);
 		}}
 		class:toggled={currentTime?.isDNF}
 		><i class="fa-solid fa-flag"></i>dnf
@@ -44,7 +44,7 @@
 	<button
 		class="delete"
 		onclick={() => {
-			MUTATIONS.handleDelete(currentTime.id, after);
+			MUTATIONS.time.handleDelete(currentTime.id, after);
 		}}
 		><i class="fa-solid fa-trash-can"></i>delete
 	</button>

@@ -29,7 +29,7 @@
 					<td class="options">
 						<button
 							onclick={() => {
-								MUTATIONS.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+								MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
 								QUERIES.getTime(time.id);
 							}}
 							class:toggled={time.isPlusTwo}
@@ -42,7 +42,7 @@
 						>
 						<button
 							onclick={() => {
-								MUTATIONS.handleToggle(time.id, 'isDNF', time.isDNF);
+								MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF);
 								QUERIES.getTime(time.id);
 							}}
 							class:toggled={time.isDNF}
@@ -55,7 +55,7 @@
 						</button>
 						<button
 							onclick={() => {
-								MUTATIONS.handleDelete(time.id);
+								MUTATIONS.time.handleDelete(time.id);
 								QUERIES.getTime(time.id);
 							}}
 							aria-label="Delete"

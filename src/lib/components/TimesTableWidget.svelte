@@ -47,7 +47,7 @@
 				<td class="options">
 					<button
 						onclick={() => {
-							MUTATIONS.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo, loadTimes);
+							MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo, loadTimes);
 							localTimes.sync();
 						}}
 						class:toggled={time.isPlusTwo}
@@ -59,7 +59,7 @@
 					>
 					<button
 						onclick={() => {
-							MUTATIONS.handleToggle(time.id, 'isDNF', time.isDNF, loadTimes);
+							MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF, loadTimes);
 							localTimes.sync();
 						}}
 						class:toggled={time.isDNF}

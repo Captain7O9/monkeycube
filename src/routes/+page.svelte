@@ -63,7 +63,7 @@
 			isRunning = false;
 			return;
 		}
-		await MUTATIONS.postTime(time, previousScramble, '333');
+		await MUTATIONS.time.post(time, previousScramble, '333');
 		await localTimes.sync();
 		isRunning = false;
 	}

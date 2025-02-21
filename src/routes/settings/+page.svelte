@@ -1,61 +1,63 @@
 <script lang="ts">
-	import { styles } from '$lib/stores/style.svelte.js';
-	import { onDestroy } from 'svelte';
+	import { themes } from '$lib/stores';
+	import { onDestroy, onMount } from 'svelte';
 
-	let customStyles = $state<{ [key: string]: string }>(styles.current);
+	let customTheme = $state(themes.currentTheme.values);
 
 	function applyStyles() {
-		for (const [key] of Object.entries(styles.default)) {
-			if (!key.includes('border')) {
-				document.documentElement.style.setProperty(key, customStyles[key]);
-			}
+		let replaceTo = '';
+		for (const [key, value] of Object.entries(customTheme)) {
+			replaceTo += `${key}: ${value}; `;
 		}
-	}
 
-	function saveStyles() {
-		styles.set(customStyles);
-		styles.save();
-	}
-
-	function resetStyles() {
-		customStyles = styles.default;
+		document.querySelector('body')?.setAttribute('style', replaceTo);
 	}
 
 	$effect(() => {
 		applyStyles();
 	});
 
-	onDestroy(() => {
-		saveStyles();
+	onMount(() => {
+		console.log(themes.currentTheme.values);
+		customTheme = themes.currentTheme.values;
+		console.log(customTheme);
 	});
+
+	onDestroy(themes.apply);
 </script>
 
 <main class="constrain-width">
 	<h1>Colors</h1>
-	<!--  TODO: Handle px styles-->
 	<div class="settings">
-		<div class="color-controls">
-			{#each Object.entries(styles.default) as [key]}
-				{#if !key.includes('border')}
-					<section>
-						<label for={key}>{key}:</label>
-						<input type="color" bind:value={customStyles[key]} />
-					</section>
-				{/if}
-			{/each}
-			<button onclick={resetStyles}>Reset</button>
-			<button onclick={saveStyles}>Apply</button>
-		</div>
 		<div class="presets">
-			{#each Object.entries(styles.presets) as [preset]}
+			<button
+				onclick={() => {
+					themes.set({ name: 'custom' });
+				}}>custom</button
+			>
+			{#each Object.keys(themes.availableThemes) as preset}
 				<button
 					onclick={() => {
-						customStyles = styles.presets[preset];
-						applyStyles();
+						themes.set({ name: preset });
 					}}>{preset}</button
 				>
 			{/each}
 		</div>
+		{#if themes.currentTheme.name === 'custom'}
+			<div class="color-controls">
+				{#each Object.keys(themes.availableThemes['serika dark']) as key}
+					<section>
+						<label for={key}>{key}:</label>
+						<input type="color" bind:value={customTheme[key]} />
+					</section>
+				{/each}
+				<button
+					onclick={() => {
+						themes.set({ name: 'custom', custom: customTheme });
+					}}>Apply</button
+				>
+			</div>
+		{/if}
 	</div>
 	<!--  Note: Styles will auto apply onDestroy, but not on page refresh/leave-->
 </main>

@@ -2,7 +2,6 @@
 	import '../app.css';
 	import { NavBar } from '$lib/components';
 	import type { LayoutProps } from './$types';
-	import { styles } from '$lib/stores/style.svelte';
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
 	import { setSearchDebug } from 'cubing/search';
@@ -15,7 +14,6 @@
 	}
 
 	onMount(() => {
-		styles.load();
 		session.startNew();
 	});
 </script>

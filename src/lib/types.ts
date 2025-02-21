@@ -40,3 +40,7 @@ export type Move =
 	| 'B'
 	| 'B2'
 	| "B'";
+
+export type Theme = {
+	[key: string]: string;
+};

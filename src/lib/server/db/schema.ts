@@ -5,7 +5,7 @@ export const user = sqliteTable('user', {
 	id: text().primaryKey(),
 	username: text().notNull().unique(),
 	passwordHash: text().notNull(),
-	theme: text().default('serika dark'),
+	theme: text().notNull().default('serika dark'),
 	customTheme: blob()
 });
 

@@ -1,4 +1,4 @@
-import type { Time } from '$lib/server/db/schema';
+import type { Time, User } from '$lib/server/db/schema';
 import { localTimes } from '$lib/stores';
 
 export const QUERIES = {
@@ -60,73 +60,97 @@ export const QUERIES = {
 };
 
 export const MUTATIONS = {
-	postTime: async function (time: number, scramble: string, event: string): Promise<Time | null> {
-		try {
-			const response = await fetch(`/api/times`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					time: time,
-					scramble: scramble,
-					event: event
-				})
-			});
+	time: {
+		post: async function (time: number, scramble: string, event: string): Promise<Time | null> {
+			try {
+				const response = await fetch(`/api/times`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						time: time,
+						scramble: scramble,
+						event: event
+					})
+				});
 
-			return await response.json();
-		} catch (error) {
-			console.error(error);
-			return null;
-		}
-	},
-	patchTime: async function (timeId: number, body: object): Promise<Time | null> {
-		try {
-			const response = await fetch(`/api/times/${timeId}`, {
-				method: 'PATCH',
-				headers: {
-					'Application-Type': 'application/json'
-				},
-				body: JSON.stringify(body)
-			});
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch times');
+				return await response.json();
+			} catch (error) {
+				console.error(error);
+				return null;
 			}
+		},
+		patch: async function (timeId: number, body: object): Promise<Time | null> {
+			try {
+				const response = await fetch(`/api/times/${timeId}`, {
+					method: 'PATCH',
+					headers: {
+						'Application-Type': 'application/json'
+					},
+					body: JSON.stringify(body)
+				});
 
-			return await response.json();
-		} catch (error) {
-			console.error('Error fetching times:', error);
-			return null;
-		}
-	},
-	deleteTime: async function (timeId: number): Promise<Time | null> {
-		try {
-			const response = await fetch(`/api/times/${timeId}`, {
-				method: 'DELETE'
-			});
+				if (!response.ok) {
+					throw new Error('Failed to patch times');
+				}
 
-			if (!response.ok) {
-				throw new Error('Failed to fetch times');
+				return await response.json();
+			} catch (error) {
+				console.error('Error patching times:', error);
+				return null;
 			}
+		},
+		delete: async function (timeId: number): Promise<Time | null> {
+			try {
+				const response = await fetch(`/api/times/${timeId}`, {
+					method: 'DELETE'
+				});
 
-			return await response.json();
-		} catch (error) {
-			console.error('Error fetching times:', error);
-			return null;
+				if (!response.ok) {
+					throw new Error('Failed to delete times');
+				}
+
+				return await response.json();
+			} catch (error) {
+				console.error('Error deleting times:', error);
+				return null;
+			}
+		},
+		handleToggle: async function (
+			timeId: number,
+			option: 'isDNF' | 'isPlusTwo',
+			currentStatus: boolean = false,
+			after?: (() => void) | (() => Promise<void>)
+		) {
+			await MUTATIONS.time.patch(timeId, { [option]: !currentStatus });
+			if (after) await after();
+		},
+		handleDelete: async function (timeId: number, after?: (() => void) | (() => Promise<void>)) {
+			await MUTATIONS.time.delete(timeId);
+			if (after) await after();
 		}
 	},
-	handleToggle: async function (
-		timeId: number,
-		option: 'isDNF' | 'isPlusTwo',
-		currentStatus: boolean = false,
-		after?: (() => void) | (() => Promise<void>)
-	) {
-		await MUTATIONS.patchTime(timeId, { [option]: !currentStatus });
-		if (after) await after();
-	},
-	handleDelete: async function (timeId: number, after?: (() => void) | (() => Promise<void>)) {
-		await MUTATIONS.deleteTime(timeId);
-		if (after) await after();
+	user: {
+		patch: async function (body: object): Promise<User | null> {
+			try {
+				const response = await fetch('/api/users', {
+					method: 'PATCH',
+					headers: {
+						'Application-Type': 'application/json'
+					},
+					body: JSON.stringify(body)
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to patch user');
+				}
+
+				return await response.json();
+			} catch (error) {
+				console.error('Error patching user:', error);
+				return null;
+			}
+		}
 	}
 };

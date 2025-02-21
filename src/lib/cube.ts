@@ -84,14 +84,11 @@ export class CubeInstance {
 				this.state[adjacentFace].forEach((row, x) => {
 					row.forEach((_column, y) => {
 						if (mask[i].face[x][y]) {
-							// console.log(`Setting ${adjacentFace} ${x} ${y} to ${this.state[adjacentFace][x][y]}`);
 							rows[i][x][y] = this.state[adjacentFace][x][y] as Color;
 						}
 					});
 				});
 			});
-
-			// console.log(rows);
 
 			// For each face, if the mask has a rotation value, rotate the face
 			rows.forEach((_row, i) => {
@@ -104,23 +101,17 @@ export class CubeInstance {
 
 			// Shift the rows array to the right
 			rows.push(rows.shift()!);
-			// console.log('Rows :');
-			// console.log(rows);
 
 			// For each face, if the mask is true, set the value of the adjacent face to the current face
 			adjacentFaces.forEach((adjacentFace, i) => {
 				this.state[adjacentFace].forEach((row, x) => {
 					row.forEach((_column, y) => {
-						// console.log(adjacentFace, i, x, y);
 						if (rows[i][x][y]) {
-							// console.log(rows[i][x][y]);
 							this.state[adjacentFaces[i]][x][y] = rows[i][x][y] as Color;
 						}
 					});
 				});
 			});
-
-			// console.log(this.state);
 		};
 
 		switch (centerColor) {
@@ -473,7 +464,6 @@ export class CubeInstance {
 		const movesList = moves.toString().split(' ');
 		movesList.forEach((move) => {
 			move = move.toUpperCase() as Move;
-			// console.log(`Doing move ${move}`);
 			this.move(move as Move);
 		});
 

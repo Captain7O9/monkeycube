@@ -1,21 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Roboto+Mono:ital@0;1&display=swap');
 
 
-:root {
+.ide-completion {
 	--background-color: #323437;
 	--main-color: #e2b714;
 	--sub-color: #646669;
 	--sub-alt-color: #2c2e31;
 	--text-color: #d1d0c5;
 	--error-color: #ca4754;
-	--border-radius: 8px;
 	--white: #fff;
 	--yellow: #f7c331;
 	--green: #2ecc71;
 	--blue: #3498db;
 	--red: #e74c3c;
 	--orange: #f39c12;
+}
 
+:root {
+	--border-radius: 8px;
 }
 
 *::selection {
