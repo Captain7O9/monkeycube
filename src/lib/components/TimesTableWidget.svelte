@@ -157,10 +157,6 @@
 			}
 		}
 
-		.time {
-			color: var(--sub-color);
-		}
-
 		.placeholder {
 			color: var(--sub-color);
 		}

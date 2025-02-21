@@ -18,7 +18,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		auth.deleteSessionTokenCookie(event);
 	}
 
-	if (user?.customTheme) user.customTheme = JSON.parse(user.customTheme as string);
+	if (user) user.customTheme = JSON.parse(user.customTheme as string);
 
 	event.locals.user = user;
 	event.locals.session = session;

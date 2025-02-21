@@ -43,8 +43,8 @@
 				datasets: [
 					{
 						label: 'Times',
-						backgroundColor: themes.currentTheme.values['--main-color'],
-						borderColor: themes.currentTheme.values['--main-color'],
+						backgroundColor: themes.current['--main-color'],
+						borderColor: themes.current['--main-color'],
 						data: chartData.reverse(),
 						cubicInterpolationMode: 'monotone'
 					}

@@ -139,7 +139,7 @@ export const MUTATIONS = {
 					headers: {
 						'Application-Type': 'application/json'
 					},
-					body: JSON.stringify(body)
+					body: JSON.stringify(body).replace(/\\/g, '')
 				});
 
 				if (!response.ok) {

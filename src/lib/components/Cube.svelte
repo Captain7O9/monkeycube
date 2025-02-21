@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { CubeInstance } from '$lib/cube';
-	import type { Alg } from 'cubing/alg';
+	import { Alg } from 'cubing/alg';
 	import type { Face } from '$lib/types';
 
-	let { scramble }: { scramble: Alg } = $props();
+	let { scramble = new Alg() }: { scramble?: Alg } = $props();
 	let cube = $state(new CubeInstance());
 	let cubeState = $derived(cube.reset().doMoves(scramble).state);
 </script>
@@ -59,7 +59,7 @@
 		div {
 			width: 1.5rem;
 			height: 1.5rem;
-			border-radius: calc(var(--border-radius) / 5);
+			border-radius: calc(var(--border-radius) / 4);
 		}
 	}
 </style>

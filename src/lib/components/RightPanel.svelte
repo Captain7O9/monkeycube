@@ -40,7 +40,6 @@
 		grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
 		grid-template-rows: repeat(auto-fit, auto);
 		gap: 5px;
-		overflow: scroll;
 
 		div {
 			background-color: var(--sub-alt-color);
@@ -58,7 +57,6 @@
 			display: flex;
 			justify-content: center;
 			padding: 10px;
-			overflow: scroll;
 		}
 	}
 </style>
