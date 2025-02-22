@@ -43,8 +43,8 @@
 
 	.cube-container {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr 1fr;
-		grid-template-rows: 1fr 1fr 1fr;
+		grid-template-columns: repeat(4, 1fr);
+		grid-template-rows: repeat(3, 1fr);
 		gap: 5px;
 		width: min-content;
 	}
@@ -52,8 +52,8 @@
 	.face-container {
 		width: min-content;
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
-		grid-template-rows: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, 1fr);
+		grid-template-rows: repeat(3, 1fr);
 		gap: 4px;
 
 		div {

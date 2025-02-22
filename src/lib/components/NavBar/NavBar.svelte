@@ -27,7 +27,7 @@
 <style>
 	.navbar-content {
 		display: flex;
-		align-items: center;
+		align-items: baseline;
 		gap: 2rem;
 	}
 
