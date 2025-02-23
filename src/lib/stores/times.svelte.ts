@@ -1,6 +1,6 @@
 import type { Time } from '$lib/server/db/schema';
 import { QUERIES } from '$lib/queries';
-import { session } from '$lib/stores';
+import session from './session.svelte';
 
 class LocalTimes {
 	#times: Time[] = $state([]);

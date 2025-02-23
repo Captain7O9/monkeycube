@@ -1,0 +1,26 @@
+services:
+  dev:
+    build: .
+    container_name: sveltekit-dev
+    ports:
+      - "3002:3000"
+    env_file:
+      - .env.production
+    networks:
+      - sveltekit-network
+    restart: always
+
+  db-dev:
+    image: ghcr.io/tursodatabase/libsql-server:latest
+    container_name: db-dev
+    ports:
+      - "5002:5001"
+    volumes:
+      - /home/pi/monkeycube/data/libsql:/var/lib/sqld
+    networks:
+      - sveltekit-network
+    restart: always
+
+
+networks:
+  sveltekit-network: {}
