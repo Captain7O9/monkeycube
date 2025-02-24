@@ -11,7 +11,6 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	}
 
 	const updateData: Partial<User> = await request.json();
-	if (updateData.customTheme) updateData.customTheme = JSON.stringify(updateData.customTheme);
 
 	const patchedUser = await db
 		.update(table.user)

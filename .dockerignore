@@ -1,20 +1,37 @@
+# Ignore Node.js dependencies
+node_modules
+pnpm-lock.yaml
+yarn.lock
+
+# Ignore build output
+.svelte-kit
+build
+dist
+
+# Ignore environment variables
+.env.local
+.env.production
+
+# Ignore logs
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+*.log
+
+# Ignore Docker-specific files
 Dockerfile
 .dockerignore
+
+# Ignore system files
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+*.iml
+
+# Git-related files
 .git
 .gitignore
 .gitattributes
-README.md
-.npmrc
-.prettierrc
-.eslintrc.cjs
-.graphqlrc
-.editorconfig
-
-.svelte-kit
-.vscode
-.idea
-
-node_modules
-build
-package
-**/.env

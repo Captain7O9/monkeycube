@@ -45,6 +45,12 @@ class Themes {
 		return this.#currentTheme.custom;
 	}
 
+	/**
+	 * Set the current theme
+	 * @param name The name of the theme or 'custom' for custom theme
+	 * @param custom The custom theme
+	 * @param update Whether to update the theme or not
+	 */
 	set = async ({
 		name,
 		custom,
