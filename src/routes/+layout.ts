@@ -6,7 +6,8 @@ export const load: LayoutLoad = async ({ data }) => {
 	await themes.set({
 		name: data.user?.theme ?? 'serika dark',
 		custom: (data.user?.customTheme as Theme) ?? undefined,
-		update: false
+		apply: false,
+		push: false
 	});
 
 	return { user: data.user };

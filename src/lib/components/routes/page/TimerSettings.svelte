@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
-
 	import { MUTATIONS } from '$lib/queries';
 	import { localTimes } from '$lib/stores';
 

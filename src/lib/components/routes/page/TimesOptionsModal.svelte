@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Modal from '$lib/components/Modal.svelte';
+	import { Modal } from '$lib/components/shared';
 	import { MUTATIONS } from '$lib/queries';
 	import { formatTimeToString } from '$lib/utils.js';
 	import { localTimes } from '$lib/stores';

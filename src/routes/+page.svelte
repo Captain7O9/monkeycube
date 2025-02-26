@@ -2,12 +2,15 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { formatTime } from '$lib/utils';
-	import { TimesTableWidget, RightPanel } from '$lib/components';
+	import {
+		TimerSettings,
+		ScrambleField,
+		TimesTableWidget,
+		RightPanel
+	} from '$lib/components/routes/page';
 	import { Alg } from 'cubing/alg';
 	import type { PageProps } from './$types';
 	import { MUTATIONS } from '$lib/queries';
-	import TimerSettings from './TimerSettings.svelte';
-	import ScrambleField from './ScrambleField.svelte';
 	import { localTimes } from '$lib/stores';
 
 	const WAIT_TIME = 200;

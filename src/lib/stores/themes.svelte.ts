@@ -1,4 +1,4 @@
-import themes from './themes.json';
+import themesList from './list.json';
 import { MUTATIONS } from '$lib/queries';
 import type { Theme } from '$lib/types';
 import { browser } from '$app/environment';
@@ -15,11 +15,11 @@ import { browser } from '$app/environment';
 class Themes {
 	availableThemes: {
 		[key: string]: Theme;
-	} = themes;
+	} = themesList;
 
 	#currentTheme: { name: string; custom: Theme } = $state({
 		name: 'serika dark',
-		custom: themes['serika dark']
+		custom: themesList['serika dark']
 	});
 
 	/**
@@ -49,20 +49,24 @@ class Themes {
 	 * Set the current theme
 	 * @param name The name of the theme or 'custom' for custom theme
 	 * @param custom The custom theme
-	 * @param update Whether to update the theme or not
+	 * @param apply Whether to update the theme or not
+	 * @param push Whether to push the theme to the server or not
 	 */
 	set = async ({
 		name,
 		custom,
-		update = true
+		apply = true,
+		push = true
 	}: {
 		name: string;
 		custom?: Theme;
-		update?: boolean;
+		apply?: boolean;
+		push?: boolean;
 	}) => {
 		this.#currentTheme.name = name;
 		if (custom) this.#currentTheme.custom = custom;
-		if (update) await this.apply();
+		if (apply) await this.apply();
+		if (push) await this.push();
 	};
 
 	apply = async () => {
@@ -73,12 +77,14 @@ class Themes {
 		}
 
 		if (browser) document.querySelector('body')?.setAttribute('style', replaceTo);
+	};
 
+	async push() {
 		await MUTATIONS.user.patch({
 			theme: this.#currentTheme.name,
 			customTheme: this.#currentTheme.custom
 		});
-	};
+	}
 }
 
 export default new Themes();

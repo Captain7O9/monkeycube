@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Time } from '$lib/server/db/schema';
 	import { formatTimeToString } from '$lib/utils';
-	import { ToolTip, TimesOptionsModal } from '$lib/components/';
+	import { ToolTip, TimesOptionsModal } from '$lib/components/shared';
 	import { MUTATIONS } from '$lib/queries';
 	import { localTimes } from '$lib/stores';
 

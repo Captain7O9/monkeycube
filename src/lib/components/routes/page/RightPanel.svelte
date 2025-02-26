@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Alg } from 'cubing/alg';
-	import { Cube } from '$lib/components';
+	import { Cube } from '$lib/components/shared';
 
 	let { scramble }: { scramble: Alg } = $props();
 </script>
