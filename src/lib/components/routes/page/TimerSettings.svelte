@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fly } from 'svelte/transition';
 	import { MUTATIONS } from '$lib/queries';
-	import { localTimes } from '$lib/stores';
+	import { localTimes, userData } from '$lib/stores';
 
 	let {
 		setScramble
@@ -39,6 +39,12 @@
 	>
 		<i class="fa-solid fa-arrow-rotate-back"></i>scramble
 	</button>
+	<button
+		class:toggled={userData.settings.inspection}
+		onclick={() => {
+			userData.settings.inspection = !userData.settings.inspection;
+		}}><i class="fa-solid fa-magnifying-glass"></i>inspection</button
+	>
 	<div class="separator"></div>
 	<button
 		class="delete"

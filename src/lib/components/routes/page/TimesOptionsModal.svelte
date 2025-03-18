@@ -44,28 +44,28 @@
 		<div class="options-container">
 			<button
 				class="plus-two"
-				onclick={() => {
-					MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
-					localTimes.sync();
+				onclick={async () => {
+					await MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+					await localTimes.sync();
 				}}
 				class:toggled={time.isPlusTwo}
 				><i class="fa-solid fa-clock"></i>+2
 			</button>
 			<button
 				class="dnf"
-				onclick={() => {
-					MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF);
-					localTimes.sync();
+				onclick={async () => {
+					await MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF);
+					await localTimes.sync();
 				}}
 				class:toggled={time.isDNF}
 				><i class="fa-solid fa-flag"></i>dnf
 			</button>
 			<button
 				class="delete"
-				onclick={() => {
-					MUTATIONS.time.handleDelete(time.id);
-					localTimes.sync();
+				onclick={async () => {
+					await MUTATIONS.time.handleDelete(time.id);
 					handleClose();
+					await localTimes.sync();
 				}}
 				><i class="fa-solid fa-trash-can"></i>delete
 			</button>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { formatTime } from '$lib/utils';
 	import {
@@ -8,114 +8,152 @@
 		TimesTableWidget,
 		RightPanel
 	} from '$lib/components/routes/page';
-	import { Alg } from 'cubing/alg';
 	import type { PageProps } from './$types';
+	import { Alg } from 'cubing/alg';
 	import { MUTATIONS } from '$lib/queries';
-	import { localTimes } from '$lib/stores';
+	import { localTimes, userData } from '$lib/stores';
 
-	const WAIT_TIME = 200;
+	const WAIT_TIME = 200; // Official: 550
 
 	let { data }: PageProps = $props();
 
 	const user = data.user;
 	console.log('Logging user from +page.svelte', user);
 
-	let time = $state(0); // Time in milliseconds
-	let minutes = $derived(formatTime(time).minutes);
-	let seconds = $derived(formatTime(time).seconds);
-	let decimals = $derived(formatTime(time).decimals);
-
+	let currentTime = $state(Date.now());
 	let lastTime = $derived(localTimes.last?.time);
+
+	let inspectionStartTime = $state(0);
+	let inspectionTime = $derived(inspectionStartTime !== 0 ? currentTime - inspectionStartTime : 0);
+
+	let keyDownStartTime = $state(0);
+	let keyDownTime = $derived(keyDownStartTime !== 0 ? currentTime - keyDownStartTime : 0);
+
+	let timerStartTime = $state(0);
+	let timerTime = $derived(timerStartTime !== 0 ? currentTime - timerStartTime : 0);
+
+	let currentScramble = $state(new Alg());
+
+	let tablePanelHeight = $state(0);
+
+	let stage = $state<'default' | 'inspection' | 'running'>('default');
+	let canStart = $derived(stage !== 'running' && keyDownTime >= WAIT_TIME);
+
+	let displayedTime = $derived(
+		Math.max(
+			stage === 'running'
+				? timerTime
+				: stage === 'inspection'
+					? Math.ceil(15 - inspectionTime / 1_000) * 1_000
+					: (lastTime ?? 0),
+			0
+		)
+	);
 
 	let table = $state<TimesTableWidget>();
 	let scramble = $state<ScrambleField>();
 
-	let isRunning = $state(false);
-	let currentScramble = $state(new Alg());
-
-	let startTime = 0;
-	let keyDownStartTime = 0;
-	let canStart = $state(false);
-	let progressValue = $state(0);
-
-	let interval: ReturnType<typeof setInterval>;
-	let progressInterval: ReturnType<typeof setInterval>;
-
-	let tablePanelHeight = $state(0);
-
-	function onNewScramble(newScramble: Alg) {
-		console.log('scramble change');
-		currentScramble = newScramble;
+	async function onNewScramble(scramble: Alg) {
+		currentScramble = scramble;
 	}
 
 	function startTimer() {
-		isRunning = true;
-		startTime = Date.now();
+		stage = 'running';
+		inspectionStartTime = 0;
+		timerStartTime = Date.now();
+	}
+	async function stopTimer() {
+		if (user) {
+			await MUTATIONS.time.post(timerTime, currentScramble.toString(), '333');
+			await localTimes.sync();
+		}
 
-		interval = setInterval(() => {
-			time = Date.now() - startTime;
-		}, 10);
+		stage = 'default';
+		timerStartTime = 0;
 	}
 
-	async function stopTimer() {
-		clearInterval(interval);
-		const previousScramble = currentScramble.toString();
-		await scramble?.setNewScramble('333');
+	function startInspection() {
+		stage = 'inspection';
+		inspectionStartTime = Date.now();
+	}
+	function stopInspection() {
+		stage = 'default';
+	}
 
-		if (!user) {
-			isRunning = false;
-			return;
+	function handleSpaceDown() {
+		switch (stage) {
+			case 'running':
+				stopTimer();
+				break;
 		}
-		await MUTATIONS.time.post(time, previousScramble, '333');
-		await localTimes.sync();
-		isRunning = false;
+	}
+	function handleSpaceUp() {
+		switch (stage) {
+			case 'default':
+				if (userData.settings.inspection && canStart) {
+					startInspection();
+				} else {
+					if (canStart) startTimer();
+				}
+				break;
+			case 'inspection':
+				if (canStart) startTimer();
+				break;
+		}
 	}
 
 	function onWindowKeyDown(event: KeyboardEvent) {
-		if (event.code === 'Space') {
-			(document.activeElement as HTMLElement)?.blur();
-			if (keyDownStartTime === 0) {
-				keyDownStartTime = Date.now();
-			}
-			if (isRunning) {
-				stopTimer();
-				keyDownStartTime = 0;
-			}
+		switch (event.code) {
+			case 'Space':
+				handleSpaceDown();
+				if (!keyDownStartTime) keyDownStartTime = Date.now();
+				break;
+			case 'Escape':
+				if (stage === 'inspection') stopInspection();
 		}
 	}
-
 	function onWindowKeyUp(event: KeyboardEvent) {
-		if (event.code === 'Space') {
-			if (!isRunning && canStart) {
-				startTimer();
-			}
-			keyDownStartTime = 0;
+		switch (event.code) {
+			case 'Space':
+				handleSpaceUp();
+				keyDownStartTime = 0;
+
+				break;
 		}
 	}
 
-	$effect(() => {
-		if (!isRunning && lastTime && lastTime !== time) time = lastTime;
-	});
-
-	onMount(async () => {
-		// Remove focus on scramble
+	onMount(() => {
 		(document.activeElement as HTMLElement)?.blur();
-
-		await localTimes.sync();
-
-		progressInterval = setInterval(() => {
-			progressValue = keyDownStartTime === 0 ? 0 : Date.now() - keyDownStartTime;
-			canStart = progressValue > WAIT_TIME;
+		setInterval(() => {
+			currentTime = Date.now();
 		}, 10);
-	});
-	onDestroy(() => {
-		clearInterval(progressInterval);
 	});
 </script>
 
 <svelte:window onkeydown={onWindowKeyDown} onkeyup={onWindowKeyUp} />
+
+{#snippet timeSnippet()}
+	<div class:can-start={canStart} class="timer-text">
+		{#if stage === 'running'}
+			<span class="time"
+				>{formatTime(displayedTime).minutes}{formatTime(displayedTime).seconds}</span
+			><span class="decimals">
+				.{formatTime(displayedTime).decimals[0]}
+			</span>
+		{:else if stage === 'inspection'}
+			<span class="time">{formatTime(displayedTime).seconds}</span>
+		{:else if stage === 'default'}
+			<span class="time"
+				>{formatTime(displayedTime).minutes}{formatTime(displayedTime).seconds}</span
+			><span class="decimals">
+				.{formatTime(displayedTime).decimals}
+			</span>
+		{/if}
+	</div>
+{/snippet}
+
 <main>
-	{#if !(canStart || isRunning)}
+	{#if !(canStart || stage === 'running' || stage === 'inspection')}
 		<div class="times-table" transition:fly={{ x: '-100%', duration: 400 }}>
 			<TimesTableWidget bind:this={table} maxHeight={tablePanelHeight} />
 			<a href="/profile">show all</a>
@@ -134,16 +172,11 @@
 	{/if}
 
 	<div class="timer">
-		<div class:can-start={canStart} class="timer-text">
-			<span class="time">{minutes}{seconds}</span><span class="decimals">
-				.{isRunning ? decimals[0] : decimals}</span
-			>
-		</div>
-		<progress class:hidden={isRunning} max={WAIT_TIME} value={isRunning ? WAIT_TIME : progressValue}
-		></progress>
+		{@render timeSnippet()}
+		<progress class:hidden={stage === 'running'} max={WAIT_TIME} value={keyDownTime}></progress>
 	</div>
 
-	<div class="scramble" class:hidden={canStart || isRunning}>
+	<div class="scramble" class:hidden={canStart || ['running', 'inspection'].includes(stage)}>
 		<ScrambleField bind:this={scramble} autoGenerate={true} {onNewScramble} />
 	</div>
 

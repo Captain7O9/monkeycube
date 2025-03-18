@@ -47,14 +47,14 @@ html, body {
 	color: var(--sub-color);
 }
 
-a {
+a, button {
 	color: inherit;
 	text-decoration: inherit;
+	transition: background-color 100ms, color 100ms;
 }
 
 button {
 	background: none;
-	color: inherit;
 	border: none;
 	padding: 0;
 	font: inherit;
@@ -62,8 +62,9 @@ button {
 	outline: inherit;
 }
 
-a, button {
-	transition: background-color 100ms, color 100ms;
+h1, h2, h3, h4, h5, h6 {
+	font-family: "Roboto Mono", serif;
+	font-weight: 400;
 }
 
 
