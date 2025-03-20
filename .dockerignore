@@ -8,10 +8,6 @@ yarn.lock
 build
 dist
 
-# Ignore environment variables
-.env.local
-.env.production
-
 # Ignore logs
 npm-debug.log
 yarn-error.log
