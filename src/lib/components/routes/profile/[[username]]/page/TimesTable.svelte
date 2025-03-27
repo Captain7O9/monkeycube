@@ -2,9 +2,9 @@
 	import type { Time } from '$lib/server/db/schema';
 	import { formatTimeToString } from '$lib/utils';
 	import { ToolTip } from '$lib/components/shared';
-	import { MUTATIONS, QUERIES } from '$lib/queries';
+	import { MUTATIONS } from '$lib/queries';
 
-	let { times }: { times: Time[] } = $props();
+	let { times, onUpdate }: { times: Time[]; onUpdate: () => Promise<void> } = $props();
 
 	let limit = $state(10);
 	let displayedTimes = $derived(times.slice(0, limit));
@@ -28,9 +28,9 @@
 					>
 					<td class="options">
 						<button
-							onclick={() => {
-								MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
-								QUERIES.getTime(time.id);
+							onclick={async () => {
+								await MUTATIONS.time.handleToggle(time.id, 'isPlusTwo', time.isPlusTwo);
+								await onUpdate();
 							}}
 							class:toggled={time.isPlusTwo}
 							aria-label="+2"
@@ -41,9 +41,9 @@
 							></button
 						>
 						<button
-							onclick={() => {
-								MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF);
-								QUERIES.getTime(time.id);
+							onclick={async () => {
+								await MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF);
+								await onUpdate();
 							}}
 							class:toggled={time.isDNF}
 							aria-label="dnf"
@@ -54,9 +54,9 @@
 							</ToolTip>
 						</button>
 						<button
-							onclick={() => {
-								MUTATIONS.time.handleDelete(time.id);
-								QUERIES.getTime(time.id);
+							onclick={async () => {
+								await MUTATIONS.time.handleDelete(time.id);
+								await onUpdate();
 							}}
 							aria-label="Delete"
 							class="delete-button"

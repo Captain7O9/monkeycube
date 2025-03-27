@@ -3,19 +3,19 @@
 	import type { Time } from '$lib/server/db/schema';
 	import Chart from 'chart.js/auto';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import type { PageProps } from './$types';
-	import { QUERIES } from '$lib/queries';
 	import { themes } from '$lib/stores';
-
-	let { data }: PageProps = $props();
-
-	let username = $state(data.username);
-	let usernameInput = $state('');
+	import { QUERIES } from '$lib/queries';
 
 	let table = $state<TimesTable>();
 
 	let times: Time[] = $state([]);
+	async function updateTimes() {
+		times = await QUERIES.getTimes({
+			limit: 2 ** 10,
+			since: 0
+		});
+	}
+
 	let labels = $derived(
 		times.map(
 			(time) =>
@@ -27,12 +27,8 @@
 	let chart: Chart;
 	let chartCanvas = $state<HTMLCanvasElement>();
 
-	$effect(() => {
-		usernameInput = username;
-	});
-
 	onMount(async () => {
-		times = await QUERIES.getTimes({ limit: 2 ** 10, since: 0 });
+		await updateTimes();
 		console.log(times);
 
 		const ctx = chartCanvas?.getContext('2d');
@@ -56,21 +52,11 @@
 </script>
 
 <main class="constrain-width">
-	<div>
-		<label for="username">Username:</label>
-		<input bind:value={usernameInput} type="text" id="username" required />
-		<button
-			onclick={() => {
-				goto(`/profile/${usernameInput}`);
-			}}
-			>Load Times
-		</button>
-	</div>
-	<h1>Times ({username})</h1>
+	<h1>Times</h1>
 	<div id="time-chart">
 		<canvas bind:this={chartCanvas}></canvas>
 	</div>
-	<TimesTable bind:this={table} {times} />
+	<TimesTable bind:this={table} {times} onUpdate={updateTimes} />
 </main>
 
 <style>
