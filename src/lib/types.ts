@@ -21,6 +21,15 @@ export type Face = [[Color, Color, Color], [Color, Color, Color], [Color, Color,
  */
 export type Cube = [Face, Face, Face, Face, Face, Face];
 
+export type TopFace = [
+	// 																																													Layout:
+	[null, Color | 'empty', Color | 'empty', Color | 'empty', null], // 												.000. <- Side Faces
+	[Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty'], // 	00000
+	[Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty'], // 	00000
+	[Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty', Color | 'empty'], // 	00000
+	[null, Color | 'empty', Color | 'empty', Color | 'empty', null] // 													.000.
+];
+
 export type Move =
 	| 'U'
 	| 'U2'
