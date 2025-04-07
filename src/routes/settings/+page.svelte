@@ -105,7 +105,7 @@
 	.theme {
 		display: grid;
 		grid-template-columns: 1fr min-content;
-		gap: 10px;
+		gap: 10px 0;
 
 		.switch {
 			width: 100%;

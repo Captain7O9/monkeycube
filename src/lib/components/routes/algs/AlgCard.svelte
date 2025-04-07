@@ -6,7 +6,6 @@
 			attributes: {
 				name: string;
 				group: string;
-				prob: string;
 				alg: string;
 			};
 			icon: TopFace;

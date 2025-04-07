@@ -1,7 +1,9 @@
 <!-- Stolen from monkeycube -->
 
 <div>
-	<div class="icon"></div>
+	<div class="icon-container">
+		<div class="icon"></div>
+	</div>
 
 	<h1 class="text">
 		<span class="top">monkey see</span>
@@ -15,17 +17,21 @@
 		align-items: last baseline;
 		gap: 10px;
 
-		.icon {
-			height: 0.8em;
-			width: 0.8em;
-			border-radius: calc(var(--border-radius) / 3);
-			outline: solid var(--main-color);
-			background: linear-gradient(-45deg, transparent 50%, var(--main-color) 50%) right;
-			background-size: 300%;
-			transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		.icon-container {
+			border: solid var(--main-color);
+			border-radius: calc(var(--border-radius) / 2);
+			overflow: hidden;
+
+			.icon {
+				height: 0.8em;
+				width: 0.8em;
+				background: linear-gradient(-45deg, transparent 50%, var(--main-color) 50%) right;
+				background-size: 300%;
+				transition: all 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			}
 		}
 
-		&:hover > .icon {
+		&:hover > .icon-container > .icon {
 			background-position: left;
 		}
 
