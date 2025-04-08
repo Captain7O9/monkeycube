@@ -22,6 +22,7 @@ export const actions: Actions = {
 		const password = formData.get('password');
 
 		if (!validateUsername(username)) {
+			console.log(username);
 			return fail(400, {
 				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
 			});
@@ -30,11 +31,16 @@ export const actions: Actions = {
 			return fail(400, { message: 'Invalid password (min 6, max 255 characters)' });
 		}
 
-		const results = await db.select().from(table.user).where(eq(table.user.username, username));
+		const [existingUser] = await db
+			.select()
+			.from(table.user)
+			.where(eq(table.user.username, username));
 
-		const existingUser = results.at(0);
 		if (!existingUser) {
 			return fail(400, { message: 'Incorrect username or password' });
+		}
+		if (!existingUser.passwordHash) {
+			return fail(400, { message: 'Password login is not available for this account' });
 		}
 
 		const validPassword = await verify(existingUser.passwordHash, password, {
@@ -100,8 +106,7 @@ export const actions: Actions = {
 function generateUserId() {
 	// ID with 120 bits of entropy, or about the same as UUID v4.
 	const bytes = crypto.getRandomValues(new Uint8Array(15));
-	const id = encodeBase32LowerCase(bytes);
-	return id;
+	return encodeBase32LowerCase(bytes);
 }
 
 function validateUsername(username: unknown): username is string {
@@ -109,7 +114,7 @@ function validateUsername(username: unknown): username is string {
 		typeof username === 'string' &&
 		username.length >= 3 &&
 		username.length <= 31 &&
-		/^[a-z0-9_-]+$/.test(username)
+		/^[A-Za-z0-9_-]+$/.test(username)
 	);
 }
 

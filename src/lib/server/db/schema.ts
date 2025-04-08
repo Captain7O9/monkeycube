@@ -1,10 +1,11 @@
-import { boolean, json, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, integer, json, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 export const user = pgTable('user', {
 	id: text().primaryKey(),
+	githubId: integer(),
 	username: text().notNull().unique(),
-	passwordHash: text().notNull(),
+	passwordHash: text(),
 	theme: text().notNull().default('serika dark'),
 	customTheme: json().default({
 		'--background-color': '#323437',

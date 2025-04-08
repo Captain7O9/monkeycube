@@ -52,7 +52,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 	}
 
 	const result = await db.delete(table.time).where(eq(table.time.id, Number(params.id)));
-	if (result.rowsAffected === 0) {
+	if (!result) {
 		error(404, 'Time not found');
 	}
 

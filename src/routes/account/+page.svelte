@@ -19,7 +19,9 @@
 		<button>Login</button>
 		<button formaction="?/register">Register</button>
 		<button formaction="?/logout">Logout</button>
+		<a href="/login/github">Sign in with github</a>
 	</form>
+
 	<p style:color="red">{form?.message ?? ''}</p>
 
 	{#if data.user}
