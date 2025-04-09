@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	import { NavBar } from '$lib/components/routes/layout';
+	import NavBar from './NavBar.svelte';
 	import type { LayoutProps } from './$types';
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';

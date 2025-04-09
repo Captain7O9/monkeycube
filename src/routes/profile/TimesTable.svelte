@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Time } from '$lib/server/db/schema';
 	import { formatTimeToString } from '$lib/utils';
-	import { ToolTip } from '$lib/components/shared';
+	import { ToolTip } from '$lib/components';
 	import { MUTATIONS } from '$lib/queries';
 
 	let { times, onUpdate }: { times: Time[]; onUpdate: () => Promise<void> } = $props();

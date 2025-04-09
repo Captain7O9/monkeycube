@@ -2,12 +2,11 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { formatTime } from '$lib/utils';
-	import {
-		TimerSettings,
-		ScrambleField,
-		TimesTableWidget,
-		RightPanel
-	} from '$lib/components/routes/page';
+	import TimerSettings from './TimerSettings.svelte';
+	import ScrambleField from './ScrambleField.svelte';
+	import TimesTableWidget from './TimesTableWidget.svelte';
+	import RightPanel from './RightPanel.svelte';
+
 	import type { PageProps } from './$types';
 	import { Alg } from 'cubing/alg';
 	import { MUTATIONS } from '$lib/queries';

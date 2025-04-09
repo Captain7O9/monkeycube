@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AlgCard from '$lib/components/routes/algs/AlgCard.svelte';
+	import AlgCard from './AlgCard.svelte';
 	import { olls } from './algs';
 </script>
 

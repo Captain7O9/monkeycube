@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { TimesTable } from '$lib/components/routes/profile/[[username]]/page';
+	import TimesTable from './TimesTable.svelte';
 	import type { Time } from '$lib/server/db/schema';
 	import Chart from 'chart.js/auto';
 	import { onMount } from 'svelte';

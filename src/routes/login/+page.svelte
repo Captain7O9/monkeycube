@@ -7,7 +7,7 @@
 
 <main class="constrain-width">
 	<h1>Login/Register</h1>
-	<form data-sveltekit-reload method="post" action="?/login" use:enhance>
+	<form data-sveltekit-reload method="post" action="?/login" use:enhance autocomplete="off">
 		<label>
 			Username
 			<input name="username" />

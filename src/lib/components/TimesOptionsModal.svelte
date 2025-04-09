@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Modal } from '$lib/components/shared';
+	import { Modal } from '$lib/components/index';
 	import { MUTATIONS } from '$lib/queries';
 	import { formatTimeToString } from '$lib/utils.js';
 	import { localTimes } from '$lib/stores';
