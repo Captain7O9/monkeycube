@@ -4,7 +4,7 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "docker compose start db && vite dev",
 		"dev:host": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",

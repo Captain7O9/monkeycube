@@ -1,4 +1,4 @@
-import themesList from './list.json';
+import themesList from './themes.json';
 import { MUTATIONS } from '$lib/queries';
 import type { Theme } from '$lib/types';
 import { browser } from '$app/environment';
