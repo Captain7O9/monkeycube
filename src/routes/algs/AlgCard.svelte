@@ -43,7 +43,7 @@
 	</div>
 </div>
 
-<style lang="scss">
+<style>
 	.alg-card {
 		min-width: fit-content;
 		display: flex;

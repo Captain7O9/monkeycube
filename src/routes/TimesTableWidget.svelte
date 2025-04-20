@@ -96,69 +96,69 @@
 	<TimesOptionsModal timeId={modalId} {handleClose} />
 {/if}
 
-<style lang="scss">
+<style>
 	table {
 		text-align: left;
 		border-collapse: collapse;
+	}
 
-		th {
-			font-weight: normal;
+	th {
+		font-weight: normal;
+	}
+
+	td {
+		padding: 1rem 0.4rem;
+	}
+
+	thead th {
+		font-size: 0.75rem;
+		padding: 0.3rem 0.4rem;
+		position: sticky;
+		top: 0;
+		background-color: var(--background-color);
+	}
+
+	tbody {
+		color: var(--text-color);
+		tr:nth-child(odd) td {
+			background-color: var(--sub-alt-color);
 		}
-
-		td {
-			padding: 1rem 0.4rem;
-		}
-
-		thead th {
-			font-size: 0.75rem;
-			padding: 0.3rem 0.4rem;
-			position: sticky;
-			top: 0;
+		tr:nth-child(even) td {
 			background-color: var(--background-color);
 		}
+	}
 
-		tbody {
-			color: var(--text-color);
-			tr:nth-child(odd) td {
-				background-color: var(--sub-alt-color);
-			}
-			tr:nth-child(even) td {
-				background-color: var(--background-color);
-			}
+	th,
+	td {
+		&:first-child {
+			border-radius: var(--border-radius) 0 0 var(--border-radius);
 		}
-
-		th,
-		td {
-			&:first-child {
-				border-radius: var(--border-radius) 0 0 var(--border-radius);
-			}
-			&:last-child {
-				border-radius: 0 var(--border-radius) var(--border-radius) 0;
-			}
+		&:last-child {
+			border-radius: 0 var(--border-radius) var(--border-radius) 0;
 		}
+	}
 
-		.options {
-			width: 0.1%;
-			padding-right: 1rem;
-			justify-content: space-evenly;
-			white-space: nowrap;
-			color: var(--sub-color);
+	.options {
+		width: 0.1%;
+		padding-right: 1rem;
+		justify-content: space-evenly;
+		white-space: nowrap;
+		color: var(--sub-color);
 
-			.toggled {
+		.toggled {
+			color: var(--main-color);
+
+			&:hover {
 				color: var(--main-color);
-
-				&:hover {
-					color: var(--main-color);
-				}
-			}
-
-			button:hover {
-				color: var(--text-color);
 			}
 		}
 
-		.placeholder {
-			color: var(--sub-color);
+		button:hover {
+			color: var(--text-color);
 		}
+	}
+
+	.placeholder {
+		color: var(--sub-color);
 	}
 </style>

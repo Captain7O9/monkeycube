@@ -11,7 +11,7 @@
 	</div>
 </main>
 
-<style lang="scss">
+<style>
 	.algs {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));

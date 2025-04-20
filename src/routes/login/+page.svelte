@@ -29,7 +29,7 @@
 		{#if loginType === 'login'}
 			<button class="action" formaction="?/login">login</button>
 		{:else}
-			<!--			<input type="password" name="repeat-password" placeholder="repeat password" required />-->
+			<input type="password" name="repeat-password" placeholder="repeat password" required />
 			<button class="action" formaction="?/register">register</button>
 		{/if}
 		<div class="separator">or use</div>
@@ -48,89 +48,90 @@
 	</form>
 </main>
 
-<style lang="scss">
-	i {
-		padding-right: 0.3rem;
-	}
-
+<style>
 	main {
 		flex-grow: 1;
 		margin: 10vh auto;
+	}
 
-		form {
-			display: grid;
-			grid-auto-rows: 1fr;
-			grid-template-columns: 1fr 1fr;
-			width: clamp(200px, 25vw, 1000px);
-			gap: 4px;
+	form {
+		display: grid;
+		grid-auto-rows: 1fr;
+		grid-template-columns: 1fr 1fr;
+		width: clamp(200px, 25vw, 1000px);
+		gap: 4px;
+	}
 
-			button {
-				flex: 1;
-				padding: 10px;
-				color: var(--text-color);
-				background-color: var(--sub-alt-color);
-				border-radius: var(--border-radius);
-			}
+	button {
+		flex: 1;
+		padding: 10px;
+		color: var(--text-color);
+		background-color: var(--sub-alt-color);
+		border-radius: var(--border-radius);
 
-			.selected {
-				color: var(--sub-alt-color);
-				background-color: var(--main-color);
-			}
+		&.selected {
+			color: var(--sub-alt-color);
+			background-color: var(--main-color);
+		}
 
-			input {
-				font-size: 1rem;
-				background-color: var(--sub-alt-color);
-				border: solid 2px transparent;
-				border-radius: calc(var(--border-radius) / 1.5);
-				color: var(--text-color);
-				grid-column: span 2;
-				padding: 0 5px;
+		i {
+			padding-right: 0.3rem;
+		}
+	}
 
-				&:focus {
-					outline: none;
-					border: solid 2px var(--main-color);
-				}
-			}
+	input {
+		font-size: 1rem;
+		background-color: var(--sub-alt-color);
+		border: solid 2px transparent;
+		border-radius: calc(var(--border-radius) / 1.5);
+		color: var(--text-color);
+		grid-column: span 2;
+		padding: 0 5px;
 
-			.action {
-				grid-column: span 2;
-			}
+		&:focus {
+			outline: none;
+			border: solid 2px var(--main-color);
+		}
+	}
 
-			.action:hover,
-			.provider:hover {
-				color: var(--sub-alt-color);
-				background-color: var(--text-color);
-			}
+	.action {
+		grid-column: span 2;
+	}
 
-			.separator {
-				position: relative;
-				grid-column: span 2;
-				text-align: center;
-				align-content: center;
+	.action:hover,
+	.provider:hover {
+		color: var(--sub-alt-color);
+		background-color: var(--text-color);
+	}
 
-				&::before {
-					content: '';
-					background-color: var(--sub-color);
-					position: absolute;
-					left: 0;
-					bottom: 50%;
-					transform: translateY(50%);
-					width: calc(50% - 35px);
-					height: 2px;
-					border-radius: var(--border-radius);
-				}
-				&::after {
-					content: '';
-					background-color: var(--sub-color);
-					position: absolute;
-					right: 0;
-					bottom: 50%;
-					transform: translateY(50%);
-					width: calc(50% - 35px);
-					height: 2px;
-					border-radius: var(--border-radius);
-				}
-			}
+	.separator {
+		position: relative;
+		grid-column: span 2;
+		text-align: center;
+		align-content: center;
+
+		&::before {
+			content: '';
+			background-color: var(--sub-color);
+			position: absolute;
+			left: 0;
+			bottom: 50%;
+			transform: translateY(50%);
+			width: calc(50% - 35px);
+			height: 2px;
+			border-radius: var(--border-radius);
+		}
+
+		&::after {
+			content: '';
+			background-color: var(--sub-color);
+			position: absolute;
+			right: 0;
+			bottom: 50%;
+			transform: translateY(50%);
+			width: calc(50% - 35px);
+			height: 2px;
+			border-radius: var(--border-radius);
 		}
 	}
 </style>

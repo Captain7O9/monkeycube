@@ -55,7 +55,7 @@
 	</button>
 </div>
 
-<style lang="scss">
+<style>
 	.timer-settings {
 		background-color: var(--sub-alt-color);
 		border-radius: var(--border-radius);
@@ -64,39 +64,39 @@
 		justify-content: space-between;
 		grid-area: 1 / 3 / 2 / 4;
 		font-size: 0.75em;
+	}
 
-		.delete:hover {
-			color: var(--error-color);
+	.delete:hover {
+		color: var(--error-color);
+	}
+
+	button {
+		padding: 1em;
+		display: inline-flex;
+		align-items: baseline;
+
+		i {
+			padding-right: 0.5em;
 		}
 
-		button {
-			padding: 1em;
-			display: inline-flex;
-			align-items: baseline;
-
-			i {
-				padding-right: 0.5em;
-			}
-
-			&:hover {
-				color: var(--text-color);
-			}
+		&:hover {
+			color: var(--text-color);
 		}
+	}
 
-		.toggled {
+	.toggled {
+		color: var(--main-color);
+
+		&:hover {
 			color: var(--main-color);
-
-			&:hover {
-				color: var(--main-color);
-			}
 		}
+	}
 
-		.separator {
-			align-self: center;
-			width: 0.5em;
-			height: 2em;
-			border-radius: 3px;
-			background-color: var(--background-color);
-		}
+	.separator {
+		align-self: center;
+		width: 0.5em;
+		height: 2em;
+		border-radius: 3px;
+		background-color: var(--background-color);
 	}
 </style>

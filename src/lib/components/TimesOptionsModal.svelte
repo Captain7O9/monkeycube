@@ -31,17 +31,19 @@
 			>
 			{#if time.isPlusTwo}
 				<div class="separator"></div>
-				<span>{formatTimeToString(time.time)}<span class="red">+2</span></span>
+				<span
+					>{formatTimeToString(time.time)}<span style="color: var(--error-color);">+2</span></span
+				>
 			{/if}
 			{#if time.isDNF}
 				<div class="separator"></div>
-				<span class="red">DNF</span>
+				<span style="color: var(--error-color);">DNF</span>
 			{/if}
 		</div>
 
 		<div class="scramble">{time.scramble}</div>
 
-		<div class="options-container">
+		<div class="options">
 			<button
 				class="plus-two"
 				onclick={async () => {
@@ -74,80 +76,74 @@
 	</div>
 </Modal>
 
-<style lang="scss">
+<style>
 	.modal-wrapper {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
+		gap: 2rem;
+	}
 
-		.time {
-			display: flex;
-			align-items: baseline;
-			justify-content: space-between;
-			gap: 16px;
-			font-size: 3rem;
+	.time {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
 
-			.red {
-				color: var(--error-color);
-			}
-
-			.separator {
-				align-self: center;
-				width: 0.5rem;
-				height: 1em;
-				border-radius: var(--border-radius);
-				background-color: var(--sub-alt-color);
-			}
-		}
-
-		.scramble {
-			height: 40px;
-		}
-
-		.options-container {
-			background-color: var(--sub-alt-color);
+		.separator {
+			align-self: center;
+			width: 0.5rem;
+			height: 1em;
 			border-radius: var(--border-radius);
-			display: flex;
-			justify-content: space-between;
-			margin-bottom: auto;
-			font-size: 0.75em;
+			background-color: var(--sub-alt-color);
+		}
+	}
 
-			.delete:hover {
-				color: var(--error-color);
-			}
+	.scramble {
+		height: 2.5rem;
+	}
 
-			.toggled {
-				color: var(--main-color);
+	.options {
+		background-color: var(--sub-alt-color);
+		border-radius: var(--border-radius);
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: auto;
+		font-size: 0.75em;
+	}
 
-				&:hover {
-					color: var(--main-color);
-				}
-			}
+	button {
+		padding: 1em;
+		display: inline-flex;
+		align-items: baseline;
 
-			button {
-				padding: 1em;
-				display: inline-flex;
-				align-items: baseline;
-
-				i {
-					padding-right: 0.5em;
-				}
-
-				&:hover {
-					color: var(--text-color);
-				}
-			}
+		i {
+			padding-right: 0.5em;
 		}
 
-		.close {
-			background-color: var(--sub-alt-color);
-			border-radius: var(--border-radius);
-			height: 40px;
+		&:hover {
+			color: var(--text-color);
+		}
+	}
 
-			&:hover {
-				background-color: var(--sub-color);
-				color: var(--background-color);
-			}
+	.delete:hover {
+		color: var(--error-color);
+	}
+
+	.toggled {
+		color: var(--main-color);
+		&:hover {
+			color: var(--main-color);
+		}
+	}
+
+	.close {
+		background-color: var(--sub-alt-color);
+		border-radius: var(--border-radius);
+		height: 40px;
+
+		&:hover {
+			background-color: var(--sub-color);
+			color: var(--background-color);
 		}
 	}
 </style>

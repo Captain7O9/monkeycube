@@ -93,7 +93,7 @@
 	{/if}
 </div>
 
-<style lang="scss">
+<style>
 	.toggled {
 		color: var(--main-color);
 	}
@@ -101,74 +101,75 @@
 	.times-table {
 		display: flex;
 		flex-direction: column;
+	}
 
-		table {
-			width: 100%;
-			text-align: left;
-			border-collapse: collapse;
-			table-layout: fixed;
+	table {
+		width: 100%;
+		text-align: left;
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
 
-			th {
-				font-weight: normal;
-			}
+	th {
+		font-weight: normal;
+	}
 
-			td {
-				padding: 1rem;
-			}
+	td {
+		padding: 1rem;
+	}
 
-			thead th {
-				font-size: 0.75rem;
-				padding: 0.3rem 1rem;
-				position: sticky;
-				top: 0;
-				background-color: var(--background-color);
-			}
+	thead th {
+		font-size: 0.75rem;
+		padding: 0.3rem 1rem;
+		position: sticky;
+		top: 0;
+		background-color: var(--background-color);
+	}
 
-			tbody {
-				color: var(--text-color);
-				tr:nth-child(odd) td {
-					background-color: var(--sub-alt-color);
-				}
-				tr:nth-child(even) td {
-					background-color: var(--background-color);
-				}
-			}
-
-			th,
-			td {
-				&:first-child {
-					border-radius: var(--border-radius) 0 0 var(--border-radius);
-				}
-				&:last-child {
-					border-radius: 0 var(--border-radius) var(--border-radius) 0;
-				}
-			}
-
-			.options {
-				color: var(--sub-color);
-				width: 65px;
-			}
-
-			.delete-button:hover {
-				color: var(--error-color);
-			}
-
-			.setting:hover {
-				color: var(--text-color);
-			}
-		}
-		.show {
-			color: var(--text-color);
+	tbody {
+		color: var(--text-color);
+		tr:nth-child(odd) td {
 			background-color: var(--sub-alt-color);
-			padding: 5px;
-			width: 100%;
-			margin-top: 5px;
-			border-radius: var(--border-radius);
+		}
+		tr:nth-child(even) td {
+			background-color: var(--background-color);
+		}
+	}
 
-			&:hover {
-				background-color: var(--text-color);
-				color: var(--sub-alt-color);
-			}
+	th,
+	td {
+		&:first-child {
+			border-radius: var(--border-radius) 0 0 var(--border-radius);
+		}
+		&:last-child {
+			border-radius: 0 var(--border-radius) var(--border-radius) 0;
+		}
+	}
+
+	.options {
+		color: var(--sub-color);
+		width: 65px;
+	}
+
+	.delete-button:hover {
+		color: var(--error-color);
+	}
+
+	.setting:hover {
+		color: var(--text-color);
+	}
+
+	.show {
+		color: var(--text-color);
+		background-color: var(--sub-alt-color);
+		padding: 5px;
+		width: 100%;
+		margin-top: 5px;
+		border-radius: var(--border-radius);
+
+		&:hover {
+			background-color: var(--text-color);
+			color: var(--sub-alt-color);
 		}
 	}
 </style>

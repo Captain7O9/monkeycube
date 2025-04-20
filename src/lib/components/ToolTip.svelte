@@ -4,9 +4,10 @@
 
 <div data-content={content}>{@render children()}</div>
 
-<style lang="scss">
+<style>
 	div {
 		position: relative;
+
 		&::before {
 			position: absolute;
 			content: attr(data-content);

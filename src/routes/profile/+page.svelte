@@ -64,13 +64,13 @@
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
+	}
 
-		h1 {
-			color: var(--text-color);
-		}
+	h1 {
+		color: var(--text-color);
+	}
 
-		canvas {
-			margin-top: 10px;
-		}
+	canvas {
+		margin-top: 10px;
 	}
 </style>

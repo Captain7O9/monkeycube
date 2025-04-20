@@ -46,30 +46,30 @@
 		padding: 20px 0;
 		min-height: 100vh;
 		box-sizing: border-box;
+	}
 
-		.content {
-			display: flex;
-			flex-direction: column;
-			flex-grow: 1;
-		}
+	.content {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+	}
 
-		.footer {
-			display: flex;
-			justify-content: center;
-			font-size: 0.75rem;
+	.footer {
+		display: flex;
+		justify-content: center;
+		font-size: 0.75rem;
+	}
 
-			a {
-				display: flex;
-				align-content: center;
-				justify-content: center;
-				gap: 5px;
-				color: var(--text-secondary);
-				width: min-content;
+	a {
+		display: flex;
+		align-content: center;
+		justify-content: center;
+		gap: 5px;
+		color: var(--text-secondary);
+		width: min-content;
 
-				&:hover {
-					color: var(--text-color);
-				}
-			}
+		&:hover {
+			color: var(--text-color);
 		}
 	}
 </style>

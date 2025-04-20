@@ -33,7 +33,7 @@
 	</div>
 </div>
 
-<style lang="scss">
+<style>
 	.cube {
 		display: flex;
 		justify-content: center;

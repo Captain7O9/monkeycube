@@ -183,12 +183,7 @@
 	<div bind:clientHeight={tablePanelHeight} class="times-table hidden"></div>
 </main>
 
-<style lang="scss">
-	@mixin panel {
-		background-color: var(--sub-alt-color);
-		border-radius: var(--border-radius);
-	}
-
+<style>
 	main {
 		display: grid;
 		grid-template-rows: min-content 1fr 1fr;
@@ -198,94 +193,96 @@
 		margin: 0 20px;
 		overflow: hidden;
 		max-height: 100%;
+	}
 
-		.can-start {
-			color: var(--text-color);
-		}
+	.can-start {
+		color: var(--text-color);
+	}
 
-		.times-table {
-			@include panel;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			grid-area: 1 / 1 / 4 / 2;
-			padding: 5px;
+	.times-table {
+		background-color: var(--sub-alt-color);
+		border-radius: var(--border-radius);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		grid-area: 1 / 1 / 4 / 2;
+		padding: 5px;
 
-			a {
-				background-color: var(--background-color);
-				border-radius: var(--border-radius);
-				text-align: center;
-			}
-
-			a:hover {
-				background-color: var(--sub-color);
-				color: var(--background-color);
-				text-align: center;
-			}
-		}
-
-		.timer {
-			align-self: end;
-			padding-bottom: 35px;
-			grid-area: 2 / 2 / 3 / 5;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-
-			.timer-text {
-				transition: color 400ms;
-				margin-left: -0.5em;
-
-				.time {
-					font-size: 8rem;
-				}
-
-				.decimals {
-					font-size: 2rem;
-				}
-			}
-
-			progress {
-				width: clamp(200px, 10vw, 300px);
-				height: 5px;
-				border-radius: 3px;
-				border: none;
-				background: var(--sub-alt-color);
-			}
-
-			progress::-moz-progress-bar {
-				border: none;
-				border-radius: 3px;
-				background: var(--main-color);
-			}
-
-			progress::-webkit-progress-value {
-				border: none;
-				border-radius: 3px;
-				background: var(--main-color);
-			}
-
-			progress::-webkit-progress-bar {
-				border: none;
-				border-radius: 3px;
-				background: var(--sub-alt-color);
-			}
-		}
-
-		.scramble {
-			grid-area: 3 / 2 / 4 / 5;
-			transition: opacity 100ms;
+		a {
+			background-color: var(--background-color);
+			border-radius: var(--border-radius);
 			text-align: center;
-			margin: 1vh auto;
-			font-size: 1.5rem;
-			width: 100%;
 		}
+
+		a:hover {
+			background-color: var(--sub-color);
+			color: var(--background-color);
+			text-align: center;
+		}
+	}
+
+	.timer {
+		align-self: end;
+		padding-bottom: 35px;
+		grid-area: 2 / 2 / 3 / 5;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		.timer-text {
+			transition: color 400ms;
+			margin-left: -0.5em;
+		}
+
+		.time {
+			font-size: 8rem;
+		}
+
+		.decimals {
+			font-size: 2rem;
+		}
+
+		progress {
+			width: clamp(200px, 10vw, 300px);
+			height: 5px;
+			border-radius: 3px;
+			border: none;
+			background: var(--sub-alt-color);
+		}
+
+		progress::-moz-progress-bar {
+			border: none;
+			border-radius: 3px;
+			background: var(--main-color);
+		}
+
+		progress::-webkit-progress-value {
+			border: none;
+			border-radius: 3px;
+			background: var(--main-color);
+		}
+
+		progress::-webkit-progress-bar {
+			border: none;
+			border-radius: 3px;
+			background: var(--sub-alt-color);
+		}
+	}
+
+	.scramble {
+		grid-area: 3 / 2 / 4 / 5;
+		transition: opacity 100ms;
+		text-align: center;
+		margin: 1vh auto;
+		font-size: 1.5rem;
+		width: 100%;
 	}
 
 	.timer-settings-placeholders {
 		display: flex;
 		grid-area: 1 / 3 / 2 / 4;
 		font-size: 0.75em;
+
 		button {
 			padding: 1em;
 		}
