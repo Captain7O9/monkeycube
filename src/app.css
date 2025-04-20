@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend+Deca&family=Roboto+Mono:ital@0;1&display=swap');
 
-
 .ide-completion {
 	--background-color: #323437;
 	--main-color: #e2b714;
@@ -26,20 +25,21 @@
 }
 
 * {
-	font-family: "Roboto Mono", monospace;
+	font-family: 'Roboto Mono', monospace;
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: normal;
 }
 
 .lexend-deca {
-	font-family: "Lexend Deca", serif;
+	font-family: 'Lexend Deca', serif;
 	font-optical-sizing: auto;
 	font-weight: 400;
 	font-style: normal;
 }
 
-html, body {
+html,
+body {
 	scroll-behavior: smooth;
 	margin: 0;
 	padding: 0;
@@ -47,10 +47,13 @@ html, body {
 	color: var(--sub-color);
 }
 
-a, button {
+a,
+button {
 	color: inherit;
 	text-decoration: inherit;
-	transition: background-color 100ms, color 100ms;
+	transition:
+		background-color 100ms,
+		color 100ms;
 }
 
 button {

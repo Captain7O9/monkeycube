@@ -7,7 +7,7 @@ services:
     environment:
       MIGRATE: true
     ports:
-      - "3002:3000"
+      - '3002:3000'
     restart: unless-stopped
     depends_on:
       - db
@@ -17,7 +17,7 @@ services:
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     env_file:
       - .env.production
     networks:
@@ -26,10 +26,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
-
 networks:
   app-network:
-
 
 volumes:
   postgres_data:
