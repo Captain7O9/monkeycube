@@ -1,3 +1,5 @@
+import type { Time } from '$lib/server/db/schema';
+
 /**
  * Converts milliseconds to an object with minutes, seconds and milliseconds.
  * ```ts
@@ -60,4 +62,40 @@ export function formatTime(timeInMilliseconds: number): {
 	const decimalsString = milliseconds.toString().padStart(3, '0').padEnd(3, '0');
 
 	return { minutes: minutesString, seconds: secondsString, decimals: decimalsString };
+}
+
+/**
+ * Calculates the average of a subset of times from an array of `Time` objects. The `times` array should
+ * be sorted in descending order based on the `date` property.
+ *
+ * The function supports three modes of operation:
+ * 1. If `of` is 0, it calculates the average of all times in the array.
+ * 2. If `index` is not provided, it calculates the average of the last `of` times in the array.
+ * 3. If `index` is provided, it calculates the average of the last `of` times up to the given `index`.
+ *
+ * @param of - The number of times to include in the average calculation. If 0, all times are included.
+ * @param times - An array of `Time` objects, each containing a `time` property in milliseconds.
+ * @param index - (Optional) The index up to which the average is calculated. If not provided, the calculation starts from the end of the array.
+ * @returns The average of the selected times as a number.
+ */
+export function getAverage({ of, times, index }: { of: number; times: Time[]; index: number }) {
+	let sum = 0;
+
+	if (of === 0) {
+		times.forEach(({ time }) => {
+			sum += time;
+		});
+		return sum / times.length;
+	}
+
+	times.forEach(({ time }, i) => {
+		if (i >= index && i < index + of) {
+			sum += time;
+		}
+	});
+
+	// Check if of does not exceed the remaining times
+	const divideBy = times.length - index <= of ? times.length - index : of;
+
+	return sum / divideBy;
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Time } from '$lib/server/db/schema';
-	import { formatTimeToString } from '$lib/utils';
+	import { formatTimeToString, getAverage } from '$lib/utils';
 	import { ToolTip, TimesOptionsModal } from '$lib/components';
 	import { MUTATIONS } from '$lib/queries';
 	import { localTimes } from '$lib/stores';
@@ -38,12 +38,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		{#each times as time}
+		{#each times as time, i}
 			<tr bind:clientHeight={height}>
 				<td class="time">{formatTimeToString(time.time)}</td>
-				<td class="time">{formatTimeToString(time.time)}</td>
-				<td class="time">{formatTimeToString(time.time)}</td>
-				<!--        <td class="date">{new Date(time.date ?? 0).toLocaleDateString()}</td>-->
+				<td class="time"
+					>{formatTimeToString(Math.round(getAverage({ of: 5, times: times, index: i })))}</td
+				>
+				<td class="time"
+					>{formatTimeToString(Math.round(getAverage({ of: 12, times: times, index: i })))}</td
+				>
 				<td class="options">
 					<button
 						onclick={() => {
@@ -55,8 +58,8 @@
 					>
 						<ToolTip content="+2">
 							<i class="fa-solid fa-clock"></i></ToolTip
-						></button
-					>
+						>
+					</button>
 					<button
 						onclick={() => {
 							MUTATIONS.time.handleToggle(time.id, 'isDNF', time.isDNF, loadTimes);
@@ -77,8 +80,8 @@
 					>
 						<ToolTip content="info">
 							<i class="fa-solid fa-info-circle"></i></ToolTip
-						></button
-					>
+						>
+					</button>
 				</td>
 			</tr>
 		{:else}
@@ -120,9 +123,11 @@
 
 	tbody {
 		color: var(--text-color);
+
 		tr:nth-child(odd) td {
 			background-color: var(--sub-alt-color);
 		}
+
 		tr:nth-child(even) td {
 			background-color: var(--background-color);
 		}
@@ -133,6 +138,7 @@
 		&:first-child {
 			border-radius: var(--border-radius) 0 0 var(--border-radius);
 		}
+
 		&:last-child {
 			border-radius: 0 var(--border-radius) var(--border-radius) 0;
 		}
