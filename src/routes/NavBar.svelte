@@ -11,17 +11,21 @@
 	<a href="/profile" aria-label="times"><i class="fa-solid fa-chart-simple"></i></a>
 	<a href="/algs" aria-label="algorithms"><i class="fa-solid fa-list-ul"></i></a>
 	<a href="/settings" aria-label="settings"><i class="fa-solid fa-cog"></i></a>
-	<a href="/login" class="login">
-		<div class="user">
-			{#if username}
+	{#if username}
+		<a href="/account" class="login"
+			><div class="user">
 				<i class="fa-solid fa-user-circle"></i>
 				<p>{username}</p>
-			{:else}
-				<i class="fa-solid fa-arrow-circle-right"></i>
+			</div></a
+		>
+	{:else}
+		<a href="/login" class="login"
+			><div class="user">
+				<i class="fa-solid fa-arrow-alt-circle-right"></i>
 				<p>Login</p>
-			{/if}
-		</div>
-	</a>
+			</div></a
+		>
+	{/if}
 </div>
 
 <style>

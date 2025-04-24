@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData, PageData } from './$types';
 	import { redirect } from '@sveltejs/kit';
-
-	let { form, data }: { form: ActionData; data: PageData } = $props();
 
 	let loginType: 'login' | 'register' = $state('login');
 </script>
@@ -38,12 +35,6 @@
 			onclick={() => {
 				redirect(302, '/login/github');
 			}}><i class="fa-brands fa-github"></i>GitHub</button
-		>
-		<button
-			class="provider"
-			onclick={() => {
-				redirect(302, '/login/google');
-			}}><i class="fa-brands fa-google"></i>Google</button
 		>
 	</form>
 </main>
@@ -96,6 +87,11 @@
 
 	.action {
 		grid-column: span 2;
+	}
+
+	.provider {
+		grid-column: span 2;
+
 	}
 
 	.action:hover,

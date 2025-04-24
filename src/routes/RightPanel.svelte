@@ -6,28 +6,28 @@
 </script>
 
 <div class="stats-container">
-	<div class="info stat">
+	<div class="info card">
 		PB
 		<h1>35.234</h1>
 	</div>
-	<div class="info stat">
+	<div class="info card">
 		ao5
 		<h1>35.234</h1>
 	</div>
-	<div class="info stat">
+	<div class="info card">
 		ao12
 		<h1>35.234</h1>
 	</div>
-	<div class="info stat">
+	<div class="info card">
 		ao100
 		<h1>35.234</h1>
 	</div>
-	<div class="graph stat">
+	<div class="graph card">
 		graph
 		<h1>graph</h1>
 	</div>
 
-	<div class="cube-preview">
+	<div class="cube-preview card">
 		<Cube scramble={new Alg(scramble)} />
 	</div>
 </div>
@@ -42,7 +42,7 @@
 		gap: 5px;
 	}
 
-	.stat {
+	.card {
 		background-color: var(--sub-alt-color);
 		border-radius: var(--border-radius);
 		text-align: center;

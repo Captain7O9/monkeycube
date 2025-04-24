@@ -11,8 +11,10 @@ export const load: PageServerLoad = async (event) => {
 	if (event.locals.user && event.url.searchParams.has('redirectTo')) {
 		return redirect(303, event.url.searchParams.get('redirectTo')!);
 	}
-
-	return { user: event.locals.user };
+	if (event.locals.user) {
+		console.log('redirecting');
+		return redirect(302, '/account');
+	}
 };
 
 export const actions: Actions = {
@@ -87,15 +89,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'An error has occurred' + error });
 		}
 
-		if (event.url.searchParams.has('redirectTo')) {
-			redirect(303, event.url.searchParams.get('redirectTo')!);
-		}
-	},
-	logout: async (event) => {
-		if (!event.locals.session) {
-			return fail(401);
-		}
-		await auth.invalidateSession(event.locals.session.id);
 		if (event.url.searchParams.has('redirectTo')) {
 			redirect(303, event.url.searchParams.get('redirectTo')!);
 		}
