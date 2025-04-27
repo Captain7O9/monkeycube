@@ -2,59 +2,77 @@ import type { Time, User } from '$lib/server/db/schema';
 import { localTimes } from '$lib/stores';
 
 export const QUERIES = {
-	getTimes: async function ({
-		limit,
-		since,
-		save = true
-	}: {
-		limit: number;
-		since: number;
-		save?: boolean;
-	}): Promise<Time[]> {
-		try {
-			const response = await fetch(`/api/times?limit=${limit}&since=${since}`, {
-				method: 'GET'
-			});
+	times: {
+		getTimes: async function ({
+			limit,
+			since,
+			save = true
+		}: {
+			limit: number;
+			since: number;
+			save?: boolean;
+		}): Promise<Time[]> {
+			try {
+				const response = await fetch(`/api/times?limit=${limit}&since=${since}`, {
+					method: 'GET'
+				});
 
-			if (!response.ok) {
-				throw new Error('Failed to fetch times');
-			}
-
-			const newTimes = await response.json();
-			if (save) localTimes.times = newTimes;
-			return newTimes;
-		} catch (error) {
-			console.error('Error fetching times:', error);
-			return [];
-		}
-	},
-	getTime: async function (timeId: number, save: boolean = true) {
-		try {
-			const response = await fetch(`/api/times/${timeId}`, {
-				method: 'GET'
-			});
-
-			if (!response.ok) {
-				throw new Error('Failed to fetch time');
-			}
-
-			const newTime = await response.json();
-
-			if (save) {
-				console.log('Saving time');
-
-				const targetTimeIndex = localTimes.times.findIndex((time) => time.id);
-
-				if (targetTimeIndex === -1) {
-					localTimes.times.push(newTime);
-				} else {
-					localTimes.times[targetTimeIndex] = newTime;
+				if (!response.ok) {
+					throw new Error('Failed to fetch times');
 				}
-			}
 
-			return newTime;
-		} catch (error) {
-			console.error(`Error fetching time ${timeId}:`, error);
+				const newTimes = await response.json();
+				if (save) localTimes.times = newTimes;
+				return newTimes;
+			} catch (error) {
+				console.error('Error fetching times:', error);
+				return [];
+			}
+		},
+		getTime: async function (timeId: number, save: boolean = true) {
+			try {
+				const response = await fetch(`/api/times/${timeId}`, {
+					method: 'GET'
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch time');
+				}
+
+				const newTime = await response.json();
+
+				if (save) {
+					console.log('Saving time');
+
+					const targetTimeIndex = localTimes.times.findIndex((time) => time.id);
+
+					if (targetTimeIndex === -1) {
+						localTimes.times.push(newTime);
+					} else {
+						localTimes.times[targetTimeIndex] = newTime;
+					}
+				}
+
+				return newTime;
+			} catch (error) {
+				console.error(`Error fetching time ${timeId}:`, error);
+			}
+		},
+		getAverage: async function (timeId: number, of: number): Promise<number> {
+			try {
+				const response = await fetch(`/api/times/${timeId}/average?of=${of}`, {
+					method: 'GET'
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to fetch average');
+				}
+
+				return await response.json();
+			} catch (error) {
+				console.error(`Error fetching average for time ${timeId}:`, error);
+				return 0;
+			}
 		}
 	}
 };

@@ -39,7 +39,7 @@ class LocalTimes {
 		since = session.start
 	}: { limit?: number; since?: number } = {}) => {
 		console.log('Syncing times');
-		this.times = await QUERIES.getTimes({ limit, since });
+		this.times = await QUERIES.times.getTimes({ limit, since });
 	};
 }
 

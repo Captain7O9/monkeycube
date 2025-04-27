@@ -11,30 +11,21 @@ export const GET: RequestHandler = async ({ params }) => {
 		.from(table.time)
 		.where(eq(table.time.id, Number(params.id)));
 
-	if (!result) {
-		error(404, 'Time not found');
-	}
+	if (!result) error(404, { message: 'Time not found' });
 
 	return json(result);
 };
 
 export const PATCH: RequestHandler = async ({ locals, params, request }) => {
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
+	if (!locals.user) error(401, { message: 'Unauthorized' });
 
 	const [timeRequested] = await db
 		.select({ userId: table.time.userId })
 		.from(table.time)
 		.where(eq(table.time.id, Number(params.id)));
 
-	if (!timeRequested) {
-		error(404, 'Time not found');
-	}
-
-	if (locals.user.id !== timeRequested.userId) {
-		error(403, 'You do not have permission to edit this time');
-	}
+	if (!timeRequested) error(404, { message: 'Time not found' });
+	if (locals.user.id !== timeRequested.userId) error(403, { message: 'Forbidden' });
 
 	const updateData: Partial<Time> = await request.json();
 
@@ -47,14 +38,10 @@ export const PATCH: RequestHandler = async ({ locals, params, request }) => {
 };
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
+	if (!locals.user) error(401, { message: 'Unauthorized' });
 
 	const result = await db.delete(table.time).where(eq(table.time.id, Number(params.id)));
-	if (!result) {
-		error(404, 'Time not found');
-	}
+	if (!result) error(404, { message: 'Time not found' });
 
 	return json(result);
 };

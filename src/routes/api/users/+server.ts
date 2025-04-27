@@ -6,9 +6,7 @@ import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
+	if (!locals.user) error(401, { message: 'Unauthorized' });
 
 	const updateData: Partial<User> = await request.json();
 

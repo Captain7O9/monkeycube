@@ -33,6 +33,9 @@ export function convertTime(timeInMilliseconds: number): {
  * @returns Time in the format mm:ss.SSS
  */
 export function formatTimeToString(timeInMilliseconds: number): string {
+	if (isNaN(timeInMilliseconds)) {
+		return '';
+	}
 	const { minutes, seconds, milliseconds } = convertTime(timeInMilliseconds);
 
 	const decimals = milliseconds.toString().padStart(3, '0').padEnd(3, '0');
@@ -78,7 +81,19 @@ export function formatTime(timeInMilliseconds: number): {
  * @param index - (Optional) The index up to which the average is calculated. If not provided, the calculation starts from the end of the array.
  * @returns The average of the selected times as a number.
  */
-export function getAverage({ of, times, index }: { of: number; times: Time[]; index: number }) {
+export function getAverage({
+	of,
+	times,
+	index
+}: {
+	of: number;
+	times?: Time[] | undefined;
+	index: number;
+}) {
+	if (!times) {
+		return 0;
+	}
+
 	let sum = 0;
 
 	if (of === 0) {

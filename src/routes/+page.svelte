@@ -67,6 +67,7 @@
 			await localTimes.sync();
 		}
 
+		await scramble?.setNewScramble('333');
 		stage = 'default';
 		timerStartTime = 0;
 	}
@@ -165,7 +166,7 @@
 		</div>
 	{:else}
 		<!--Workaround to transition:fly making the element disappear from the DOM-->
-		<div class="timer-settings-placeholders hidden">
+		<div aria-hidden="true" class="timer-settings-placeholders hidden">
 			<button class="setting">placeholder</button>
 		</div>
 	{/if}

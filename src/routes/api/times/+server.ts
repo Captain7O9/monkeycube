@@ -10,7 +10,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 	const since = Number(url.searchParams.get('since'));
 
 	if (!userId && !locals.user) {
-		error(400, 'No user ID provided');
+		error(400, { message: 'No userId provided' });
 	} else if (!userId) {
 		userId = locals.user!.id;
 	}
@@ -27,9 +27,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 };
 
 export const POST: RequestHandler = async ({ locals, request }) => {
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
+	if (!locals.user) error(401, { message: 'Unauthorized' });
 
 	const { time, scramble, event } = await request.json();
 	const createdTime = await db.insert(table.time).values({
