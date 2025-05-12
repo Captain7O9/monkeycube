@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { redirect } from '@sveltejs/kit';
 
 	let loginType: 'login' | 'register' = $state('login');
 </script>
@@ -31,9 +30,10 @@
 		{/if}
 		<div class="separator">or use</div>
 		<button
+			form="none"
 			class="provider"
 			onclick={() => {
-				redirect(302, '/login/github');
+				window.location.href = '/login/github';
 			}}><i class="fa-brands fa-github"></i>GitHub</button
 		>
 	</form>
@@ -91,7 +91,6 @@
 
 	.provider {
 		grid-column: span 2;
-
 	}
 
 	.action:hover,
